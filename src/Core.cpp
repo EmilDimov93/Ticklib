@@ -7,13 +7,16 @@
 
 HWND hwnd;
 
-#define WIDTH 800
-#define HEIGHT 600
+Size screenSize = {1200, 600};
 
-static uint32_t pixels[WIDTH * HEIGHT];
+static uint32_t pixels[1200 * 600];
 
 void DrawRectangle(int x, int y, int w, int h, int color, float roundness)
 {
+    if(x > screenSize.w || y > screenSize.h){
+        return;
+    }
+
     if (roundness < 0.0f){
         roundness = 0.0f;
     }
@@ -28,9 +31,13 @@ void DrawRectangle(int x, int y, int w, int h, int color, float roundness)
 
     for (int j = y; j < y + h; j++)
     {
+        if (j < 0 || j >= screenSize.h) continue;
+
         for (int i = x; i < x + w; i++)
         {
             bool skip = false;
+
+            if (i < 0 || i >= screenSize.w) continue;
 
             if (i < x + rx && j < y + ry)
             {
@@ -58,15 +65,20 @@ void DrawRectangle(int x, int y, int w, int h, int color, float roundness)
             }
 
             if (!skip){
-                pixels[j * WIDTH + i] = color;
+                pixels[j * screenSize.w + i] = color;
             }
         }
     }
 }
 
+void DrawRectangle(Position position, Size size, int color, float roundness)
+{
+    DrawRectangle(position.x, position.y, size.w, size.h, color, roundness);
+}
+
 void ClearBackground()
 {
-    for (int i = 0; i < WIDTH * HEIGHT; ++i)
+    for (int i = 0; i < screenSize.w * screenSize.h; ++i)
     {
         pixels[i] = COLOR_BLUE;
     }
@@ -83,14 +95,14 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
         BITMAPINFO bmi{};
         bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-        bmi.bmiHeader.biWidth = WIDTH;
-        bmi.bmiHeader.biHeight = -HEIGHT;
+        bmi.bmiHeader.biWidth = screenSize.w;
+        bmi.bmiHeader.biHeight = -screenSize.h;
         bmi.bmiHeader.biPlanes = 1;
         bmi.bmiHeader.biBitCount = 32;
         bmi.bmiHeader.biCompression = BI_RGB;
 
-        StretchDIBits(hdc, 0, 0, WIDTH, HEIGHT,
-                      0, 0, WIDTH, HEIGHT,
+        StretchDIBits(hdc, 0, 0, screenSize.w, screenSize.h,
+                      0, 0, screenSize.w, screenSize.h,
                       pixels, &bmi, DIB_RGB_COLORS, SRCCOPY);
 
         EndPaint(hwnd, &ps);
@@ -123,7 +135,7 @@ bool WindowOpen()
     count++;
     if (GetTickCount() - start >= 1000)
     {
-        printf("One second later: %d\n", count);
+        printf("Frames this second: %d\n", count);
         start = GetTickCount();
         count = 0;
     }
@@ -147,7 +159,7 @@ void Init()
     hwnd = CreateWindowExA(
         0, "Ticklib", "Ticklib",
         WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-        WIDTH, HEIGHT, nullptr, nullptr, hInstance, nullptr);
+        screenSize.w, screenSize.h, nullptr, nullptr, hInstance, nullptr);
 
     ShowWindow(hwnd, SW_SHOWDEFAULT);
 

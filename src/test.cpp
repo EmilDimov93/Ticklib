@@ -1,13 +1,13 @@
 #include "Core.hpp"
 #include <iostream>
-int main() {
+
+int main()
+{
     Init();
 
-    bool a = true;
-    int counter = 0;
-    while(WindowOpen()){
-        DrawRectangle(100, 100, 100, 100, COLOR_RED, 0.2f);
+    while (WindowOpen())
+    {
+        ClearBackground();
+        DrawRectangle(Position(100, 100), Size(100, 100), COLOR_RED, 0.5f);
     }
-
-    return 0;
 }
