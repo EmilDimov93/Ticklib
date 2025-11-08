@@ -1,19 +1,75 @@
 #pragma once
 
+#include <functional>
+#include <string>
+
 #include "colors.h"
 
-struct Position{
+struct Position
+{
     int x;
     int y;
 
-    Position(int x_, int y_) : x(x_), y(y_) {}
+    Position() : x(0), y(0) {}
+    Position(int newX, int newY) : x(newX), y(newY) {}
 };
 
-struct Size{
+struct Size
+{
     int w;
     int h;
 
-    Size(int w_, int h_) : w(w_), h(h_) {}
+    Size() : w(0), h(0) {}
+    Size(int newW, int newH) : w(newW), h(newH) {}
+};
+
+struct Button
+{
+    Position position;
+    Size size;
+
+    float roundness;
+    float paddingRoundness;
+
+    unsigned int backgroundColor;
+    unsigned int paddingColor;
+    unsigned int textColor;
+
+    float padding;
+    std::string text;
+
+    std::function<void()> onClick;
+
+    Button(
+        const Position &newPosition,
+        const Size &newSize,
+        const std::string &newText,
+        unsigned int newBackgroundColor,
+        unsigned int newPaddingColor,
+        unsigned int newTextColor,
+        float newPadding = 4.0f,
+        float newRoundness = 0.0f,
+        float newPaddingRoundness = 0.0f,
+        std::function<void()> newOnClick = nullptr)
+    {
+        position = newPosition;
+        size = newSize;
+
+        roundness = newRoundness;
+        paddingRoundness = newPaddingRoundness;
+
+        backgroundColor = newBackgroundColor;
+        paddingColor = newPaddingColor;
+        textColor = newTextColor;
+
+        padding = newPadding;
+        text = newText;
+
+        onClick = newOnClick;
+    }
+
+    bool isPressed();
+    bool isReleased();
 };
 
 void Init();
