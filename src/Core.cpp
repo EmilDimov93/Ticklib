@@ -13,14 +13,17 @@ static uint32_t pixels[1200 * 600];
 
 void DrawRectangle(int x, int y, int w, int h, int color, float roundness)
 {
-    if(x > screenSize.w || y > screenSize.h){
+    if (x > screenSize.w || y > screenSize.h)
+    {
         return;
     }
 
-    if (roundness < 0.0f){
+    if (roundness < 0.0f)
+    {
         roundness = 0.0f;
     }
-    if (roundness > 1.0f){
+    if (roundness > 1.0f)
+    {
         roundness = 1.0f;
     }
 
@@ -31,13 +34,15 @@ void DrawRectangle(int x, int y, int w, int h, int color, float roundness)
 
     for (int j = y; j < y + h; j++)
     {
-        if (j < 0 || j >= screenSize.h) continue;
+        if (j < 0 || j >= screenSize.h)
+            continue;
 
         for (int i = x; i < x + w; i++)
         {
             bool skip = false;
 
-            if (i < 0 || i >= screenSize.w) continue;
+            if (i < 0 || i >= screenSize.w)
+                continue;
 
             if (i < x + rx && j < y + ry)
             {
@@ -64,7 +69,8 @@ void DrawRectangle(int x, int y, int w, int h, int color, float roundness)
                 skip = (dx * dx) / (rx2) + (dy * dy) / (ry2) > 1.0f;
             }
 
-            if (!skip){
+            if (!skip)
+            {
                 pixels[j * screenSize.w + i] = color;
             }
         }
@@ -74,6 +80,25 @@ void DrawRectangle(int x, int y, int w, int h, int color, float roundness)
 void DrawRectangle(Position position, Size size, int color, float roundness)
 {
     DrawRectangle(position.x, position.y, size.w, size.h, color, roundness);
+}
+
+void DrawButton(Button button)
+{
+    DrawRectangle(
+        (int)button.position.x,
+        (int)button.position.y,
+        (int)button.size.w,
+        (int)button.size.h,
+        button.paddingColor,
+        button.paddingRoundness);
+
+    DrawRectangle(
+        (int)(button.position.x + button.padding),
+        (int)(button.position.y + button.padding),
+        (int)(button.size.w - button.padding * 2),
+        (int)(button.size.h - button.padding * 2),
+        button.backgroundColor,
+        button.roundness);
 }
 
 void ClearBackground()

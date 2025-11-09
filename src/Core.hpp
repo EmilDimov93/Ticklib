@@ -67,9 +67,6 @@ struct Button
 
         onClick = newOnClick;
     }
-
-    bool isPressed();
-    bool isReleased();
 };
 
 void Init();
@@ -81,3 +78,5 @@ void ClearBackground();
 void DrawRectangle(int x, int y, int w, int h, int color, float roundness = 0);
 
 void DrawRectangle(Position position, Size size, int color, float roundness = 0);
+
+void DrawButton(Button button);

@@ -6,23 +6,23 @@ int main()
     Init();
 
     Button myButton(
+        {400, 100},
         {100, 100},
-        {200, 50},
-        "Click Me",
-        0xFF4444FF,
-        0x222222FF,
-        0xFFFFFFFF,
-        5.0f,
-        8.0f,
+        "Ex",
+        COLOR_RED,
+        COLOR_YELLOW,
+        COLOR_BLUE,
         4.0f,
+        0.3f,
+        0.4f,
         []() {
-            std::cout << "Button clicked!\n";
-        }
-    );
+            printf("Play Game button clicked!\n");
+        });
 
     while (WindowOpen())
     {
         ClearBackground();
         DrawRectangle(Position(100, 100), Size(100, 100), COLOR_RED, 0.5f);
+        DrawButton(myButton);
     }
 }
