@@ -19,10 +19,14 @@ int main()
             printf("Play Game button clicked!\n");
         });
 
+    int x = 100;
+    int y = 100;
+    int z = 5;
+
     while (WindowOpen())
     {
         ClearBackground();
-        DrawRectangle(Position(100, 100), Size(100, 100), COLOR_RED, 0.5f);
-        DrawButton(myButton);
+        DrawRectangle(Position(100 / 6, 100 / 6), Size(100, 100), COLOR_RED, 0.5f);
+        //DrawButton(myButton);
     }
 }

@@ -11,8 +11,56 @@ Size screenSize = {1200, 600};
 
 static uint32_t pixels[1200 * 600];
 
+struct Vec3 {
+    float x, y, z;
+};
+
+inline void putPixel(int x, int y, uint32_t color) {
+    if (x >= 0 && x < 1200 && y >= 0 && y < 600)
+        pixels[y * 1200 + x] = color;
+}
+
+void drawLine(int x0, int y0, int x1, int y1, uint32_t color) {
+    int dx = std::abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+    int dy = -std::abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+    int err = dx + dy;
+    while (true) {
+        putPixel(x0, y0, color);
+        if (x0 == x1 && y0 == y1) break;
+        int e2 = 2 * err;
+        if (e2 >= dy) { err += dy; x0 += sx; }
+        if (e2 <= dx) { err += dx; y0 += sy; }
+    }
+}
+
+void drawSquare3D(const Vec3& center, float size, float f, uint32_t color) {
+    float half = size * 0.5f;
+
+    Vec3 corners[4] = {
+        {center.x - half, center.y - half, center.z},
+        {center.x + half, center.y - half, center.z},
+        {center.x + half, center.y + half, center.z},
+        {center.x - half, center.y + half, center.z}
+    };
+
+    int sx[4], sy[4];
+
+    for (int i = 0; i < 4; i++) {
+        const auto& v = corners[i];
+        float px = (v.x * f) / v.z;
+        float py = (v.y * f) / v.z;
+        sx[i] = static_cast<int>(px + 1200 / 2);
+        sy[i] = static_cast<int>(py + 600 / 2);
+    }
+
+    for (int i = 0; i < 4; i++)
+        drawLine(sx[i], sy[i], sx[(i + 1) % 4], sy[(i + 1) % 4], color);
+}
+
 void DrawRectangle(int x, int y, int w, int h, int color, float roundness)
 {
+    drawSquare3D({0, 0, 100}, 10.0f, 800.0f, COLOR_RED);return;
+
     if (x > screenSize.w || y > screenSize.h)
     {
         return;
@@ -34,38 +82,44 @@ void DrawRectangle(int x, int y, int w, int h, int color, float roundness)
 
     for (int j = y; j < y + h; j++)
     {
-        if (j < 0 || j >= screenSize.h)
+        if (j < 0 || j >= screenSize.h){
             continue;
+        }
 
         for (int i = x; i < x + w; i++)
         {
             bool skip = false;
 
-            if (i < 0 || i >= screenSize.w)
+            if (i < 0 || i >= screenSize.w){
                 continue;
+            }
 
             if (i < x + rx && j < y + ry)
             {
                 float dx = (x + rx) - i;
                 float dy = (y + ry) - j;
+
                 skip = (dx * dx) / (rx2) + (dy * dy) / (ry2) > 1.0f;
             }
             else if (i >= x + w - rx && j < y + ry)
             {
                 float dx = i - (x + w - rx - 1);
                 float dy = (y + ry) - j;
+
                 skip = (dx * dx) / (rx2) + (dy * dy) / (ry2) > 1.0f;
             }
             else if (i < x + rx && j >= y + h - ry)
             {
                 float dx = (x + rx) - i;
                 float dy = j - (y + h - ry - 1);
+
                 skip = (dx * dx) / (rx2) + (dy * dy) / (ry2) > 1.0f;
             }
             else if (i >= x + w - rx && j >= y + h - ry)
             {
                 float dx = i - (x + w - rx - 1);
                 float dy = j - (y + h - ry - 1);
+                
                 skip = (dx * dx) / (rx2) + (dy * dy) / (ry2) > 1.0f;
             }
 

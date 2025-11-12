@@ -3,7 +3,7 @@
 #include <functional>
 #include <string>
 
-#include "colors.h"
+#include "colors.hpp"
 
 struct Position
 {
