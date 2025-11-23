@@ -13,7 +13,7 @@ void Init(Size2 windowSize);
 
 bool WindowOpen();
 
-void ClearBackground();
+void ClearBackground(uint32_t color);
 
 void DrawLine(int x1, int y0, int x2, int y2, int color);
 
