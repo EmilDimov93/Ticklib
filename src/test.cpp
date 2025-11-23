@@ -166,10 +166,23 @@ int main()
             screenP[i].y = (1 - (normalizedP[i].y + 1) / 2) * HEIGHT;
         }
 
+        bool onScreen = false;
+        for (int i = 0; i < 3; i++)
+        {
+            if (screenP[i].x >= 0 && screenP[i].x < WIDTH && screenP[i].y >= 0 && screenP[i].y < HEIGHT)
+            {
+                onScreen = true;
+                break;
+            }
+        }
+
         ClearBackground((int)COLOR_BLACK);
 
-        DrawLine((int)screenP[0].x, (int)screenP[0].y, (int)screenP[1].x, (int)screenP[1].y, COLOR_RED);
-        DrawLine((int)screenP[1].x, (int)screenP[1].y, (int)screenP[2].x, (int)screenP[2].y, COLOR_RED);
-        DrawLine((int)screenP[2].x, (int)screenP[2].y, (int)screenP[0].x, (int)screenP[0].y, COLOR_RED);
+        if (onScreen)
+        {
+            DrawLine((int)screenP[0].x, (int)screenP[0].y, (int)screenP[1].x, (int)screenP[1].y, COLOR_RED);
+            DrawLine((int)screenP[1].x, (int)screenP[1].y, (int)screenP[2].x, (int)screenP[2].y, COLOR_RED);
+            DrawLine((int)screenP[2].x, (int)screenP[2].y, (int)screenP[0].x, (int)screenP[0].y, COLOR_RED);
+        }
     }
 }
