@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(Ticklib
     src/test.cpp
     src/Core.cpp
+    src/InputManager.cpp
 )
 
 target_link_libraries(Ticklib

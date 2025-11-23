@@ -4,6 +4,8 @@
 #include "Core.hpp"
 #include <iostream>
 
+#include "InputManager.hpp"
+
 #define PI 3.1415927f
 
 #define WIDTH 1000
@@ -26,54 +28,90 @@ int main()
     Position3 worldP[3] = {
         {-1.0f, -1.0f, 5.0f},
         {1.0f, -1.0f, 5.0f},
-        {0.0f, 1.0f, 5.0f}
-    };
+        {0.0f, 1.0f, 5.0f}};
 
     Position3 cameraPos = {0, 0, -10};
 
     Position2 cameraRot = {0, 0};
 
+    InputManager input;
+
     while (WindowOpen())
     {
-        //Position2 mousePos = GetMousePosition();
+        input.refresh();
+        Position2 mousePos = input.getMousePos();
 
-        /*float delta = GetFrameTime();
+        // Frame delta
+        static LARGE_INTEGER frequency;
+        static LARGE_INTEGER lastTime;
+        static bool timeInitialized = false;
+
+        if (!timeInitialized)
+        {
+            QueryPerformanceFrequency(&frequency);
+            QueryPerformanceCounter(&lastTime);
+            timeInitialized = true;
+        }
+
+        LARGE_INTEGER currentTime;
+        QueryPerformanceCounter(&currentTime);
+        float delta = (float)(currentTime.QuadPart - lastTime.QuadPart) / frequency.QuadPart;
+        lastTime = currentTime;
+
+        // Mouse delta
+        static POINT lastMousePos = {0, 0};
+        static bool mouseInitialized = false;
+
+        POINT p;
+        GetCursorPos(&p);
+
+        Position2 md = {0, 0};
+        if (mouseInitialized)
+        {
+            md.x = (float)p.x - (float)lastMousePos.x;
+            md.y = (float)p.y - (float)lastMousePos.y;
+        }
+        else
+        {
+            mouseInitialized = true;
+        }
+        lastMousePos = p;
 
         float cs = cosf(cameraRot.x);
         float sn = sinf(cameraRot.x);
 
-        if (IsKeyDown(KEY_W))
+        if (input.isDown(TL_KEY_W))
         {
             cameraPos.x += sn * speed * delta;
             cameraPos.z += cs * speed * delta;
         }
-        if (IsKeyDown(KEY_S))
+        if (input.isDown(TL_KEY_S))
         {
             cameraPos.x -= sn * speed * delta;
             cameraPos.z -= cs * speed * delta;
         }
 
-        if (IsKeyDown(KEY_A))
+        if (input.isDown(TL_KEY_A))
         {
             cameraPos.x += cs * speed * delta;
             cameraPos.z -= sn * speed * delta;
         }
-        if (IsKeyDown(KEY_D))
+        if (input.isDown(TL_KEY_D))
         {
             cameraPos.x -= cs * speed * delta;
             cameraPos.z += sn * speed * delta;
         }
 
-        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+        if (input.isDown(TL_MOUSE_BTN_LEFT))
         {
-            Vector2 md = GetMouseDelta();
-            cameraRot.x -= md.x * 0.01;
-            cameraRot.y -= md.y * 0.01;
+            cameraRot.x -= md.x * 0.01f;
+            cameraRot.y -= md.y * 0.01f;
+
             if (cameraRot.y > 1.5f)
                 cameraRot.y = 1.5f;
             if (cameraRot.y < -1.5f)
                 cameraRot.y = -1.5f;
-        }*/
+        }
 
         Position3 forward = {
             cosf(cameraRot.y) * sinf(cameraRot.x),
@@ -92,8 +130,8 @@ int main()
         for (int i = 0; i < 3; i++)
         {
             Position3 p = {worldP[i].x - cameraPos.x,
-                         worldP[i].y - cameraPos.y,
-                         worldP[i].z - cameraPos.z};
+                           worldP[i].y - cameraPos.y,
+                           worldP[i].z - cameraPos.z};
 
             viewP[i].x = p.x * right.x + p.y * right.y + p.z * right.z;
             viewP[i].y = p.x * up.x + p.y * up.y + p.z * up.z;

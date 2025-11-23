@@ -1,52 +1,25 @@
 // Copyright 2025 Emil Dimov
-// Licensed under the Apache License, Version 2.0
+// Licensed under the Apache License, TLrsion 2.0
 
 #include "InputManager.hpp"
+#include <windows.h>
 
-#include "LogManager.hpp"
-
-InputManager::InputManager(GLFWwindow *windowRef, LogManager *logRef)
+InputManager::InputManager()
 {
-    window = windowRef;
-    log = logRef;
-
-    for (size_t i = 0; i < VE_MOUSE_BTN_COUNT; i++)
-    {
+    for (size_t i = 0; i < TL_MOUSE_BTN_COUNT; i++)
         mouseBtnStates[i] = KEY_STATE_UP;
-    }
 
-    for (size_t i = 0; i < VE_KEY_COUNT; i++)
-    {
+    for (size_t i = 0; i < TL_KEY_COUNT; i++)
         keyStates[i] = KEY_STATE_UP;
-    }
 
     mousePosition = {0, 0};
 }
 
 void InputManager::refresh()
 {
-    glfwPollEvents();
-    
-    for (size_t i = 0; i < VE_MOUSE_BTN_COUNT; i++)
+    for (int i = 0; i < TL_KEY_COUNT; i++)
     {
-        bool isKeyDown = glfwGetMouseButton(window, i) == GLFW_PRESS;
-
-        switch (mouseBtnStates[i])
-        {
-        case KEY_STATE_UP:
-        case KEY_STATE_RELEASED:
-            mouseBtnStates[i] = isKeyDown ? KEY_STATE_PRESSED : KEY_STATE_UP;
-            break;
-        case KEY_STATE_DOWN:
-        case KEY_STATE_PRESSED:
-            mouseBtnStates[i] = isKeyDown ? KEY_STATE_DOWN : KEY_STATE_RELEASED;
-            break;
-        }
-    }
-
-    for (size_t i = 0; i < VE_KEY_COUNT; i++)
-    {
-        bool isKeyDown = glfwGetKey(window, i) == GLFW_PRESS;
+        bool isKeyDown = (GetAsyncKeyState(i) & 0x8000) != 0;
 
         switch (keyStates[i])
         {
@@ -61,81 +34,81 @@ void InputManager::refresh()
         }
     }
 
-    glfwGetCursorPos(window, &mousePosition.x, &mousePosition.y);
+    int mouseButtons[TL_MOUSE_BTN_COUNT] = {VK_LBUTTON, VK_RBUTTON, VK_MBUTTON, VK_XBUTTON1, VK_XBUTTON2};
+    for (int i = 0; i < TL_MOUSE_BTN_COUNT; i++)
+    {
+        bool isBtnDown = (GetAsyncKeyState(mouseButtons[i]) & 0x8000) != 0;
+
+        switch (mouseBtnStates[i])
+        {
+        case KEY_STATE_UP:
+        case KEY_STATE_RELEASED:
+            mouseBtnStates[i] = isBtnDown ? KEY_STATE_PRESSED : KEY_STATE_UP;
+            break;
+        case KEY_STATE_DOWN:
+        case KEY_STATE_PRESSED:
+            mouseBtnStates[i] = isBtnDown ? KEY_STATE_DOWN : KEY_STATE_RELEASED;
+            break;
+        }
+    }
+
+    POINT p;
+    if (GetCursorPos(&p))
+    {
+        mousePosition.x = (float)p.x;
+        mousePosition.y = (float)p.y;
+    }
 }
 
-bool InputManager::isDown(VEMouseBtn btn)
+bool InputManager::isDown(TLMouseBtn btn)
 {
-    if(btn > VE_MOUSE_BTN_COUNT){
-        log->add('C', 100);
-        return false;
-    }
+    if (btn >= TL_MOUSE_BTN_COUNT) return false;
     return mouseBtnStates[btn] == KEY_STATE_DOWN || mouseBtnStates[btn] == KEY_STATE_PRESSED;
 }
 
-bool InputManager::isUp(VEMouseBtn btn)
+bool InputManager::isUp(TLMouseBtn btn)
 {
-    if(btn > VE_MOUSE_BTN_COUNT){
-        log->add('C', 100);
-        return false;
-    }
+    if (btn >= TL_MOUSE_BTN_COUNT) return false;
     return mouseBtnStates[btn] == KEY_STATE_UP || mouseBtnStates[btn] == KEY_STATE_RELEASED;
 }
 
-bool InputManager::isPressed(VEMouseBtn btn)
+bool InputManager::isPressed(TLMouseBtn btn)
 {
-    if(btn > VE_MOUSE_BTN_COUNT){
-        log->add('C', 100);
-        return false;
-    }
+    if (btn >= TL_MOUSE_BTN_COUNT) return false;
     return mouseBtnStates[btn] == KEY_STATE_PRESSED;
 }
 
-bool InputManager::isReleased(VEMouseBtn btn)
+bool InputManager::isReleased(TLMouseBtn btn)
 {
-    if(btn > VE_MOUSE_BTN_COUNT){
-        log->add('C', 100);
-        return false;
-    }
+    if (btn >= TL_MOUSE_BTN_COUNT) return false;
     return mouseBtnStates[btn] == KEY_STATE_RELEASED;
 }
 
-bool InputManager::isDown(VEKey key)
+bool InputManager::isDown(TLKey key)
 {
-    if(key > VE_KEY_COUNT){
-        log->add('C', 100);
-        return false;
-    }
+    if (key >= TL_KEY_COUNT) return false;
     return keyStates[key] == KEY_STATE_DOWN || keyStates[key] == KEY_STATE_PRESSED;
 }
 
-bool InputManager::isUp(VEKey key)
+bool InputManager::isUp(TLKey key)
 {
-    if(key > VE_KEY_COUNT){
-        log->add('C', 100);
-        return false;
-    }
+    if (key >= TL_KEY_COUNT) return false;
     return keyStates[key] == KEY_STATE_UP || keyStates[key] == KEY_STATE_RELEASED;
 }
 
-bool InputManager::isPressed(VEKey key)
+bool InputManager::isPressed(TLKey key)
 {
-    if(key > VE_KEY_COUNT){
-        log->add('C', 100);
-        return false;
-    }
+    if (key >= TL_KEY_COUNT) return false;
     return keyStates[key] == KEY_STATE_PRESSED;
 }
 
-bool InputManager::isReleased(VEKey key)
+bool InputManager::isReleased(TLKey key)
 {
-    if(key > VE_KEY_COUNT){
-        log->add('C', 100);
-        return false;
-    }
+    if (key >= TL_KEY_COUNT) return false;
     return keyStates[key] == KEY_STATE_RELEASED;
 }
 
-Position2 InputManager::getMousePos(){
+Position2 InputManager::getMousePos()
+{
     return mousePosition;
 }
