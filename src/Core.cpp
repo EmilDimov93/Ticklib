@@ -1,3 +1,6 @@
+// Copyright 2025 Emil Dimov
+// Licensed under the Apache License, Version 2.0
+
 #include "Core.hpp"
 
 #include <windows.h>
@@ -7,60 +10,48 @@
 
 HWND hwnd;
 
-Size screenSize = {1200, 600};
+Size2 screenSize = {1000, 1000};
 
-static uint32_t pixels[1200 * 600];
+static uint32_t pixels[1000 * 1000];
 
 struct Vec3 {
     float x, y, z;
 };
 
-inline void putPixel(int x, int y, uint32_t color) {
-    if (x >= 0 && x < 1200 && y >= 0 && y < 600)
-        pixels[y * 1200 + x] = color;
-}
+void DrawLine(int x1, int y1, int x2, int y2, int color)
+{
+    int dx = abs(x2 - x1);
+    int dy = abs(y2 - y1);
+    int sx = (x1 < x2) ? 1 : -1;
+    int sy = (y1 < y2) ? 1 : -1;
+    int err = dx - dy;
 
-void drawLine(int x0, int y0, int x1, int y1, uint32_t color) {
-    int dx = std::abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
-    int dy = -std::abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
-    int err = dx + dy;
-    while (true) {
-        putPixel(x0, y0, color);
-        if (x0 == x1 && y0 == y1) break;
+    while (true)
+    {
+        if (x1 >= 0 && x1 < screenSize.w && y1 >= 0 && y1 < screenSize.h)
+        {
+            pixels[y1 * screenSize.w + x1] = color;
+        }
+
+        if (x1 == x2 && y1 == y2)
+            break;
+
         int e2 = 2 * err;
-        if (e2 >= dy) { err += dy; x0 += sx; }
-        if (e2 <= dx) { err += dx; y0 += sy; }
+        if (e2 > -dy)
+        {
+            err -= dy;
+            x1 += sx;
+        }
+        if (e2 < dx)
+        {
+            err += dx;
+            y1 += sy;
+        }
     }
-}
-
-void drawSquare3D(const Vec3& center, float size, float f, uint32_t color) {
-    float half = size * 0.5f;
-
-    Vec3 corners[4] = {
-        {center.x - half, center.y - half, center.z},
-        {center.x + half, center.y - half, center.z},
-        {center.x + half, center.y + half, center.z},
-        {center.x - half, center.y + half, center.z}
-    };
-
-    int sx[4], sy[4];
-
-    for (int i = 0; i < 4; i++) {
-        const auto& v = corners[i];
-        float px = (v.x * f) / v.z;
-        float py = (v.y * f) / v.z;
-        sx[i] = static_cast<int>(px + 1200 / 2);
-        sy[i] = static_cast<int>(py + 600 / 2);
-    }
-
-    for (int i = 0; i < 4; i++)
-        drawLine(sx[i], sy[i], sx[(i + 1) % 4], sy[(i + 1) % 4], color);
 }
 
 void DrawRectangle(int x, int y, int w, int h, int color, float roundness)
 {
-    drawSquare3D({0, 0, 100}, 10.0f, 800.0f, COLOR_RED);return;
-
     if (x > screenSize.w || y > screenSize.h)
     {
         return;
@@ -131,28 +122,9 @@ void DrawRectangle(int x, int y, int w, int h, int color, float roundness)
     }
 }
 
-void DrawRectangle(Position position, Size size, int color, float roundness)
+void DrawRectangle(Position2 position, Size2 size, int color, float roundness)
 {
     DrawRectangle(position.x, position.y, size.w, size.h, color, roundness);
-}
-
-void DrawButton(Button button)
-{
-    DrawRectangle(
-        (int)button.position.x,
-        (int)button.position.y,
-        (int)button.size.w,
-        (int)button.size.h,
-        button.paddingColor,
-        button.paddingRoundness);
-
-    DrawRectangle(
-        (int)(button.position.x + button.padding),
-        (int)(button.position.y + button.padding),
-        (int)(button.size.w - button.padding * 2),
-        (int)(button.size.h - button.padding * 2),
-        button.backgroundColor,
-        button.roundness);
 }
 
 void ClearBackground()
@@ -224,8 +196,11 @@ bool WindowOpen()
     return true;
 }
 
-void Init()
+void Init(Size2 windowSize)
 {
+    screenSize.w = windowSize.w;
+    screenSize.h = windowSize.h;
+
     HINSTANCE hInstance = GetModuleHandle(nullptr);
 
     WNDCLASSA wc{};
