@@ -9,7 +9,7 @@
 
 HWND hwnd;
 
-Size2 screenSize = {1000, 1000};
+Size2 screenSize;
 
 static uint32_t pixels[1000 * 1000];
 
@@ -37,68 +37,6 @@ void DrawLine(int x1, int y1, int x2, int y2, int color)
         if (e2 > -dy) { err -= dy; x1 += sx; }
         if (e2 < dx) { err += dx; y1 += sy; }
     }
-}
-
-void DrawRectangle(int x, int y, int w, int h, int color, float roundness)
-{
-    if (x >= screenSize.w || y >= screenSize.h) return;
-
-    if (roundness < 0.0f) roundness = 0.0f;
-    if (roundness > 1.0f) roundness = 1.0f;
-
-    int rx = (int)(roundness * (w / 2.0f));
-    int ry = (int)(roundness * (h / 2.0f));
-    int rx2 = rx * rx;
-    int ry2 = ry * ry;
-
-    for (int j = y; j < y + h; j++)
-    {
-        if (j < 0 || j >= screenSize.h) continue;
-
-        for (int i = x; i < x + w; i++)
-        {
-            if (i < 0 || i >= screenSize.w) continue;
-
-            bool skip = false;
-
-            // Top-left corner
-            if (i < x + rx && j < y + ry)
-            {
-                int dx = (x + rx) - i;
-                int dy = (y + ry) - j;
-                skip = (dx * dx) / rx2 + (dy * dy) / ry2 > 1;
-            }
-            // Top-right corner
-            else if (i >= x + w - rx && j < y + ry)
-            {
-                int dx = i - (x + w - rx - 1);
-                int dy = (y + ry) - j;
-                skip = (dx * dx) / rx2 + (dy * dy) / ry2 > 1;
-            }
-            // Bottom-left corner
-            else if (i < x + rx && j >= y + h - ry)
-            {
-                int dx = (x + rx) - i;
-                int dy = j - (y + h - ry - 1);
-                skip = (dx * dx) / rx2 + (dy * dy) / ry2 > 1;
-            }
-            // Bottom-right corner
-            else if (i >= x + w - rx && j >= y + h - ry)
-            {
-                int dx = i - (x + w - rx - 1);
-                int dy = j - (y + h - ry - 1);
-                skip = (dx * dx) / rx2 + (dy * dy) / ry2 > 1;
-            }
-
-            if (!skip)
-                pixels[j * screenSize.w + i] = color;
-        }
-    }
-}
-
-void DrawRectangle(Position2 position, Size2 size, int color, float roundness)
-{
-    DrawRectangle((int)position.x, (int)position.y, size.w, size.h, color, roundness);
 }
 
 void ClearBackground(uint32_t color)

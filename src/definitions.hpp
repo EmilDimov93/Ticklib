@@ -3,6 +3,8 @@
 
 #pragma once
 
+#define PI 3.1415927f
+
 struct Position2
 {
     float x;
@@ -39,6 +41,21 @@ struct Size3
 
     Size3() : w(0), h(0), d(0) {}
     Size3(int newW, int newH, int newD) : w(newW), h(newH), d(newD) {}
+};
+
+struct Triangle
+{
+    Position3 vertices[3];
+
+    Triangle()
+        : vertices{ Position3(), Position3(), Position3() }
+    {}
+
+    Triangle(const Position3& a,
+             const Position3& b,
+             const Position3& c)
+        : vertices{ a, b, c }
+    {}
 };
 
 struct Vec4

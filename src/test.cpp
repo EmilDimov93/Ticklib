@@ -5,8 +5,7 @@
 #include <iostream>
 
 #include "InputManager.hpp"
-
-#define PI 3.1415927f
+#include "Mesh.hpp"
 
 #define WIDTH 1000
 #define HEIGHT 1000
@@ -23,12 +22,21 @@
 
 int main()
 {
-    Init({1000, 1000});
+    Init({WIDTH, HEIGHT});
 
-    Position3 worldP[3] = {
-        {-1.0f, -1.0f, 5.0f},
-        {1.0f, -1.0f, 5.0f},
-        {0.0f, 1.0f, 5.0f}};
+    Triangle t1(
+        Position3(-1.0f, -1.0f, 5.0f),
+        Position3(1.0f, -1.0f, 5.0f),
+        Position3(0.0f, 1.0f, 5.0f));
+
+    Triangle t2(
+        Position3(0, 0, 1),
+        Position3(1, 0, 1),
+        Position3(0, 1, 1));
+
+    std::vector<Triangle> list = {t1, t2};
+
+    Mesh mesh(list);
 
     Position3 cameraPos = {0, 0, -10};
 
@@ -126,63 +134,66 @@ int main()
             right.z * forward.x - right.x * forward.z,
             right.x * forward.y - right.y * forward.x};
 
-        Vec4 viewP[3];
-        for (int i = 0; i < 3; i++)
-        {
-            Position3 p = {worldP[i].x - cameraPos.x,
-                           worldP[i].y - cameraPos.y,
-                           worldP[i].z - cameraPos.z};
-
-            viewP[i].x = p.x * right.x + p.y * right.y + p.z * right.z;
-            viewP[i].y = p.x * up.x + p.y * up.y + p.z * up.z;
-            viewP[i].z = p.x * forward.x + p.y * forward.y + p.z * forward.z;
-            viewP[i].w = 1;
-        }
-
-        Vec4 clipP[3];
-
-        for (int i = 0; i < 3; i++)
-        {
-            clipP[i].x = viewP[i].x * f / aspectRatio;
-            clipP[i].y = viewP[i].y * f;
-            clipP[i].z = viewP[i].z * (zFar + zNear) / (zNear - zFar) + (2 * zFar * zNear) / (zNear - zFar);
-            clipP[i].w = -viewP[i].z;
-        }
-
-        Position3 normalizedP[3];
-
-        for (int i = 0; i < 3; i++)
-        {
-            normalizedP[i].x = clipP[i].x / clipP[i].w;
-            normalizedP[i].y = clipP[i].y / clipP[i].w;
-            normalizedP[i].z = clipP[i].z / clipP[i].w;
-        }
-
-        Position2 screenP[3];
-
-        for (int i = 0; i < 3; i++)
-        {
-            screenP[i].x = ((normalizedP[i].x + 1) / 2) * WIDTH;
-            screenP[i].y = (1 - (normalizedP[i].y + 1) / 2) * HEIGHT;
-        }
-
-        bool onScreen = false;
-        for (int i = 0; i < 3; i++)
-        {
-            if (screenP[i].x >= 0 && screenP[i].x < WIDTH && screenP[i].y >= 0 && screenP[i].y < HEIGHT)
-            {
-                onScreen = true;
-                break;
-            }
-        }
-
         ClearBackground((int)COLOR_BLACK);
 
-        if (onScreen)
+        for (Triangle tri : mesh.tris)
         {
-            DrawLine((int)screenP[0].x, (int)screenP[0].y, (int)screenP[1].x, (int)screenP[1].y, COLOR_RED);
-            DrawLine((int)screenP[1].x, (int)screenP[1].y, (int)screenP[2].x, (int)screenP[2].y, COLOR_RED);
-            DrawLine((int)screenP[2].x, (int)screenP[2].y, (int)screenP[0].x, (int)screenP[0].y, COLOR_RED);
+            Vec4 viewP[3];
+            for (int i = 0; i < 3; i++)
+            {
+                Position3 p = {tri.vertices[i].x - cameraPos.x,
+                               tri.vertices[i].y - cameraPos.y,
+                               tri.vertices[i].z - cameraPos.z};
+
+                viewP[i].x = p.x * right.x + p.y * right.y + p.z * right.z;
+                viewP[i].y = p.x * up.x + p.y * up.y + p.z * up.z;
+                viewP[i].z = p.x * forward.x + p.y * forward.y + p.z * forward.z;
+                viewP[i].w = 1;
+            }
+
+            Vec4 clipP[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                clipP[i].x = viewP[i].x * f / aspectRatio;
+                clipP[i].y = viewP[i].y * f;
+                clipP[i].z = viewP[i].z * (zFar + zNear) / (zNear - zFar) + (2 * zFar * zNear) / (zNear - zFar);
+                clipP[i].w = -viewP[i].z;
+            }
+
+            Position3 normalizedP[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                normalizedP[i].x = clipP[i].x / clipP[i].w;
+                normalizedP[i].y = clipP[i].y / clipP[i].w;
+                normalizedP[i].z = clipP[i].z / clipP[i].w;
+            }
+
+            Position2 screenP[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                screenP[i].x = ((normalizedP[i].x + 1) / 2) * WIDTH;
+                screenP[i].y = (1 - (normalizedP[i].y + 1) / 2) * HEIGHT;
+            }
+
+            bool onScreen = false;
+            for (int i = 0; i < 3; i++)
+            {
+                if (screenP[i].x >= 0 && screenP[i].x < WIDTH && screenP[i].y >= 0 && screenP[i].y < HEIGHT)
+                {
+                    onScreen = true;
+                    break;
+                }
+            }
+
+            if (onScreen)
+            {
+                DrawLine((int)screenP[0].x, (int)screenP[0].y, (int)screenP[1].x, (int)screenP[1].y, COLOR_RED);
+                DrawLine((int)screenP[1].x, (int)screenP[1].y, (int)screenP[2].x, (int)screenP[2].y, COLOR_RED);
+                DrawLine((int)screenP[2].x, (int)screenP[2].y, (int)screenP[0].x, (int)screenP[0].y, COLOR_RED);
+            }
         }
     }
 }
