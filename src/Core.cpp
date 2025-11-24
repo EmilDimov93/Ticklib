@@ -23,7 +23,8 @@ Size2 screenSize;
 
 static uint32_t pixels[1000 * 1000];
 
-struct Vec3 {
+struct Vec3
+{
     float x, y, z;
 };
 
@@ -44,44 +45,62 @@ void DrawLine(int x1, int y1, int x2, int y2, int color)
             break;
 
         int e2 = 2 * err;
-        if (e2 > -dy) { err -= dy; x1 += sx; }
-        if (e2 < dx) { err += dx; y1 += sy; }
+        if (e2 > -dy)
+        {
+            err -= dy;
+            x1 += sx;
+        }
+        if (e2 < dx)
+        {
+            err += dx;
+            y1 += sy;
+        }
     }
 }
 
-void DrawFilledTriangle(const Position2& p0, const Position2& p1, const Position2& p2, int color)
+void DrawFilledTriangle(const Position2 &p0, const Position2 &p1, const Position2 &p2, int color)
 {
-    const Position2* pts[3] = { &p0, &p1, &p2 };
-    if (pts[1]->y < pts[0]->y) std::swap(pts[0], pts[1]);
-    if (pts[2]->y < pts[0]->y) std::swap(pts[0], pts[2]);
-    if (pts[2]->y < pts[1]->y) std::swap(pts[1], pts[2]);
+    const Position2 *pts[3] = {&p0, &p1, &p2};
+    if (pts[1]->y < pts[0]->y)
+        std::swap(pts[0], pts[1]);
+    if (pts[2]->y < pts[0]->y)
+        std::swap(pts[0], pts[2]);
+    if (pts[2]->y < pts[1]->y)
+        std::swap(pts[1], pts[2]);
 
-    auto drawScanline = [&](float y, float xStart, float xEnd) {
+    auto drawScanline = [&](float y, float xStart, float xEnd)
+    {
         int iy = static_cast<int>(y);
-        if (iy < 0 || iy >= screenSize.h) return;
+        if (iy < 0 || iy >= screenSize.h)
+            return;
 
-        if (xStart > xEnd) std::swap(xStart, xEnd);
+        if (xStart > xEnd)
+            std::swap(xStart, xEnd);
         int ixStart = std::max(0, static_cast<int>(std::ceil(xStart)));
-        int ixEnd   = std::min(screenSize.w - 1, static_cast<int>(std::floor(xEnd)));
+        int ixEnd = std::min(screenSize.w - 1, static_cast<int>(std::floor(xEnd)));
 
         for (int ix = ixStart; ix <= ixEnd; ix++)
             pixels[iy * screenSize.w + ix] = color;
     };
 
-    auto interpolateX = [](float y, const Position2& a, const Position2& b) -> float {
-        if (b.y - a.y == 0.0f) return a.x;
+    auto interpolateX = [](float y, const Position2 &a, const Position2 &b) -> float
+    {
+        if (b.y - a.y == 0.0f)
+            return a.x;
         return a.x + (b.x - a.x) * ((y - a.y) / (b.y - a.y));
     };
 
-    for (float y = std::ceil(pts[0]->y); y <= std::floor(pts[1]->y); y++) {
+    for (float y = std::ceil(pts[0]->y); y <= std::floor(pts[1]->y); y++)
+    {
         float xStart = interpolateX(y, *pts[0], *pts[2]);
-        float xEnd   = interpolateX(y, *pts[0], *pts[1]);
+        float xEnd = interpolateX(y, *pts[0], *pts[1]);
         drawScanline(y, xStart, xEnd);
     }
 
-    for (float y = std::ceil(pts[1]->y); y <= std::floor(pts[2]->y); y++) {
+    for (float y = std::ceil(pts[1]->y); y <= std::floor(pts[2]->y); y++)
+    {
         float xStart = interpolateX(y, *pts[0], *pts[2]);
-        float xEnd   = interpolateX(y, *pts[1], *pts[2]);
+        float xEnd = interpolateX(y, *pts[1], *pts[2]);
         drawScanline(y, xStart, xEnd);
     }
 }
@@ -96,31 +115,31 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
     switch (msg)
     {
-        case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hwnd, &ps);
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hwnd, &ps);
 
-            BITMAPINFO bmi{};
-            bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-            bmi.bmiHeader.biWidth = screenSize.w;
-            bmi.bmiHeader.biHeight = -screenSize.h;
-            bmi.bmiHeader.biPlanes = 1;
-            bmi.bmiHeader.biBitCount = 32;
-            bmi.bmiHeader.biCompression = BI_RGB;
+        BITMAPINFO bmi{};
+        bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+        bmi.bmiHeader.biWidth = screenSize.w;
+        bmi.bmiHeader.biHeight = -screenSize.h;
+        bmi.bmiHeader.biPlanes = 1;
+        bmi.bmiHeader.biBitCount = 32;
+        bmi.bmiHeader.biCompression = BI_RGB;
 
-            StretchDIBits(hdc, 0, 0, screenSize.w, screenSize.h,
-                          0, 0, screenSize.w, screenSize.h,
-                          pixels, &bmi, DIB_RGB_COLORS, SRCCOPY);
+        StretchDIBits(hdc, 0, 0, screenSize.w, screenSize.h,
+                      0, 0, screenSize.w, screenSize.h,
+                      pixels, &bmi, DIB_RGB_COLORS, SRCCOPY);
 
-            EndPaint(hwnd, &ps);
-            return 0;
-        }
-        case WM_DESTROY:
-            PostQuitMessage(0);
-            return 0;
-        default:
-            return DefWindowProcA(hwnd, msg, wp, lp);
+        EndPaint(hwnd, &ps);
+        return 0;
+    }
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return 0;
+    default:
+        return DefWindowProcA(hwnd, msg, wp, lp);
     }
 }
 
@@ -133,7 +152,8 @@ bool WindowOpen()
     MSG msg{};
     while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE))
     {
-        if (msg.message == WM_QUIT) return false;
+        if (msg.message == WM_QUIT)
+            return false;
         TranslateMessage(&msg);
         DispatchMessageA(&msg);
     }
@@ -176,4 +196,92 @@ void Init(Size2 windowSize)
     ClearBackground(COLOR_BLACK);
     cursor = LoadCursor(nullptr, IDC_ARROW);
     start = GetTickCount();
+}
+
+void convertTriToView(Triangle tri, Camera camera, Position3 position, Vec4 out[3])
+{
+    for (int i = 0; i < 3; i++)
+    {
+        Position3 p = {tri.vertices[i].x + position.x - camera.x(),
+                       tri.vertices[i].y + position.y - camera.y(),
+                       tri.vertices[i].z + position.z - camera.z()};
+
+        out[i].x = p.x * camera.getRight().x + p.y * camera.getRight().y + p.z * camera.getRight().z;
+        out[i].y = p.x * camera.getUp().x + p.y * camera.getUp().y + p.z * camera.getUp().z;
+        out[i].z = p.x * camera.getForward().x + p.y * camera.getForward().y + p.z * camera.getForward().z;
+        out[i].w = 1;
+    }
+}
+
+bool isTriInView(Vec4 viewP[3])
+{
+    for (int i = 0; i < 3; i++)
+    {
+        if (viewP[i].z <= 0)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void convertViewToClip(Vec4 viewP[3], Vec4 out[3])
+{
+    float aspectRatio = (float)screenSize.w / (float)screenSize.h;
+    float f = 1.0f / tanf(fov * 0.5f * (PI / 180.0f));
+    for (int i = 0; i < 3; i++)
+    {
+        out[i].x = viewP[i].x * f / aspectRatio;
+        out[i].y = viewP[i].y * f;
+        out[i].z = viewP[i].z * (zFar + zNear) / (zNear - zFar) + (2 * zFar * zNear) / (zNear - zFar);
+        out[i].w = -viewP[i].z;
+    }
+}
+
+void convertClipToNormalized(Vec4 clipP[3], Position3 out[3])
+{
+    for (int i = 0; i < 3; i++)
+    {
+        out[i].x = clipP[i].x / clipP[i].w;
+        out[i].y = clipP[i].y / clipP[i].w;
+        out[i].z = clipP[i].z / clipP[i].w;
+    }
+}
+
+void convertNormalizedToScreen(Position3 normalizedP[3], Position2 out[3])
+{
+    for (int i = 0; i < 3; i++)
+    {
+        out[i].x = ((normalizedP[i].x + 1) / 2) * screenSize.w;
+        out[i].y = (1 - (normalizedP[i].y + 1) / 2) * screenSize.h;
+    }
+}
+
+void DrawManager::DrawMeshes(Camera camera)
+{
+    for (Mesh mesh : meshes)
+    {
+        for (Triangle tri : mesh.tris)
+        {
+            Vec4 viewP[3];
+            convertTriToView(tri, camera, mesh.position, viewP);
+
+            if (!isTriInView(viewP))
+            {
+                continue;
+            }
+
+            Vec4 clipP[3];
+            convertViewToClip(viewP, clipP);
+
+            Position3 normalizedP[3];
+            convertClipToNormalized(clipP, normalizedP);
+
+            Position2 screenP[3];
+            convertNormalizedToScreen(normalizedP, screenP);
+
+            DrawFilledTriangle(screenP[0], screenP[1], screenP[2], mesh.color);
+        }
+    }
 }

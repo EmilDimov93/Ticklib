@@ -12,7 +12,9 @@ private:
 public:
     std::vector<Triangle> tris;
     Position3 position;
-    Mesh() = default;
+    uint32_t color;
 
-    Mesh(const std::vector<Triangle>& t) : tris(t) {}
+    Mesh() : position{0,0,0}, color(0xFFFFFFFF) {}
+
+    Mesh(const std::vector<Triangle>& t, const Position3& pos = {0,0,0}, uint32_t col = 0xFFFFFFFF) : tris(t), position(pos), color(col) {}
 };

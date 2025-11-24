@@ -23,5 +23,12 @@ void DrawLine(int x1, int y0, int x2, int y2, int color);
 void DrawFilledTriangle(const Position2& p0, const Position2& p1, const Position2& p2, int color);
 
 class DrawManager{
+public:
     std::vector<Mesh> meshes;
+
+    DrawManager() = default;
+
+    DrawManager(const std::vector<Mesh>& m) : meshes(m) {}
+
+    void DrawMeshes(Camera camera);
 };
