@@ -10,7 +10,8 @@ private:
     
 
 public:
-std::vector<Triangle> tris;
+    std::vector<Triangle> tris;
+    Position3 position;
     Mesh() = default;
 
     Mesh(const std::vector<Triangle>& t) : tris(t) {}

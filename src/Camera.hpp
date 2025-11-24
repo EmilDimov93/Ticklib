@@ -5,7 +5,7 @@
 #include "InputManager.hpp"
 
 class Camera{
-public:
+private:
     Position3 position = {0, 0, -10};
 
     Rotation2 rotation = {0, 0};
@@ -14,6 +14,7 @@ public:
     Position3 right;
     Position3 up;
 
+public:
     float x();
     float y();
     float z();

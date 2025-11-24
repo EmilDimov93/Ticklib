@@ -7,6 +7,16 @@
 #include <cstdint>
 #include <iostream>
 
+#ifdef max
+#undef max
+#endif
+
+#ifdef min
+#undef min
+#endif
+
+#include <algorithm>
+
 HWND hwnd;
 
 Size2 screenSize;
@@ -36,6 +46,43 @@ void DrawLine(int x1, int y1, int x2, int y2, int color)
         int e2 = 2 * err;
         if (e2 > -dy) { err -= dy; x1 += sx; }
         if (e2 < dx) { err += dx; y1 += sy; }
+    }
+}
+
+void DrawFilledTriangle(const Position2& p0, const Position2& p1, const Position2& p2, int color)
+{
+    const Position2* pts[3] = { &p0, &p1, &p2 };
+    if (pts[1]->y < pts[0]->y) std::swap(pts[0], pts[1]);
+    if (pts[2]->y < pts[0]->y) std::swap(pts[0], pts[2]);
+    if (pts[2]->y < pts[1]->y) std::swap(pts[1], pts[2]);
+
+    auto drawScanline = [&](float y, float xStart, float xEnd) {
+        int iy = static_cast<int>(y);
+        if (iy < 0 || iy >= screenSize.h) return;
+
+        if (xStart > xEnd) std::swap(xStart, xEnd);
+        int ixStart = std::max(0, static_cast<int>(std::ceil(xStart)));
+        int ixEnd   = std::min(screenSize.w - 1, static_cast<int>(std::floor(xEnd)));
+
+        for (int ix = ixStart; ix <= ixEnd; ix++)
+            pixels[iy * screenSize.w + ix] = color;
+    };
+
+    auto interpolateX = [](float y, const Position2& a, const Position2& b) -> float {
+        if (b.y - a.y == 0.0f) return a.x;
+        return a.x + (b.x - a.x) * ((y - a.y) / (b.y - a.y));
+    };
+
+    for (float y = std::ceil(pts[0]->y); y <= std::floor(pts[1]->y); y++) {
+        float xStart = interpolateX(y, *pts[0], *pts[2]);
+        float xEnd   = interpolateX(y, *pts[0], *pts[1]);
+        drawScanline(y, xStart, xEnd);
+    }
+
+    for (float y = std::ceil(pts[1]->y); y <= std::floor(pts[2]->y); y++) {
+        float xStart = interpolateX(y, *pts[0], *pts[2]);
+        float xEnd   = interpolateX(y, *pts[1], *pts[2]);
+        drawScanline(y, xStart, xEnd);
     }
 }
 

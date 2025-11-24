@@ -65,6 +65,64 @@ bool loadOBJ(const std::string &filename, std::vector<Triangle> &outTriangles)
     return true;
 }
 
+void convertTriToView(Triangle tri, Camera camera, Vec4 out[3])
+{
+    for (int i = 0; i < 3; i++)
+    {
+        Position3 p = {tri.vertices[i].x - camera.x(),
+                       tri.vertices[i].y - camera.y(),
+                       tri.vertices[i].z - camera.z()};
+
+        out[i].x = p.x * camera.getRight().x + p.y * camera.getRight().y + p.z * camera.getRight().z;
+        out[i].y = p.x * camera.getUp().x + p.y * camera.getUp().y + p.z * camera.getUp().z;
+        out[i].z = p.x * camera.getForward().x + p.y * camera.getForward().y + p.z * camera.getForward().z;
+        out[i].w = 1;
+    }
+}
+
+bool isTriInView(Vec4 viewP[3])
+{
+    for (int i = 0; i < 3; i++)
+    {
+        if (viewP[i].z <= 0)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void convertViewToClip(Vec4 viewP[3], Vec4 out[3])
+{
+    for (int i = 0; i < 3; i++)
+    {
+        out[i].x = viewP[i].x * f / aspectRatio;
+        out[i].y = viewP[i].y * f;
+        out[i].z = viewP[i].z * (zFar + zNear) / (zNear - zFar) + (2 * zFar * zNear) / (zNear - zFar);
+        out[i].w = -viewP[i].z;
+    }
+}
+
+void convertClipToNormalized(Vec4 clipP[3], Position3 out[3])
+{
+    for (int i = 0; i < 3; i++)
+    {
+        out[i].x = clipP[i].x / clipP[i].w;
+        out[i].y = clipP[i].y / clipP[i].w;
+        out[i].z = clipP[i].z / clipP[i].w;
+    }
+}
+
+void convertNormalizedToScreen(Position3 normalizedP[3], Position2 out[3])
+{
+    for (int i = 0; i < 3; i++)
+    {
+        out[i].x = ((normalizedP[i].x + 1) / 2) * WIDTH;
+        out[i].y = (1 - (normalizedP[i].y + 1) / 2) * HEIGHT;
+    }
+}
+
 int main()
 {
     Init({WIDTH, HEIGHT});
@@ -73,9 +131,6 @@ int main()
     if (!loadOBJ("teapot.obj", list))
     {
         std::cerr << "Failed to load model" << std::endl;
-    }
-    else{
-        std::cout << "Good";
     }
 
     Mesh mesh(list);
@@ -95,62 +150,27 @@ int main()
         for (Triangle tri : mesh.tris)
         {
             Vec4 viewP[3];
-            for (int i = 0; i < 3; i++)
-            {
-                Position3 p = {tri.vertices[i].x - camera.x(),
-                               tri.vertices[i].y - camera.y(),
-                               tri.vertices[i].z - camera.z()};
+            convertTriToView(tri, camera, viewP);
 
-                viewP[i].x = p.x * camera.getRight().x + p.y * camera.getRight().y + p.z * camera.getRight().z;
-                viewP[i].y = p.x * camera.getUp().x + p.y * camera.getUp().y + p.z * camera.getUp().z;
-                viewP[i].z = p.x * camera.getForward().x + p.y * camera.getForward().y + p.z * camera.getForward().z;
-                viewP[i].w = 1;
-            }
-
-            bool behind = false;
-            for (int i = 0; i < 3; i++)
-            {
-                if (viewP[i].z <= 0)
-                {
-                    behind = true;
-                    break;
-                }
-            }
-            if (behind)
+            if (!isTriInView(viewP))
             {
                 continue;
             }
 
             Vec4 clipP[3];
-
-            for (int i = 0; i < 3; i++)
-            {
-                clipP[i].x = viewP[i].x * f / aspectRatio;
-                clipP[i].y = viewP[i].y * f;
-                clipP[i].z = viewP[i].z * (zFar + zNear) / (zNear - zFar) + (2 * zFar * zNear) / (zNear - zFar);
-                clipP[i].w = -viewP[i].z;
-            }
+            convertViewToClip(viewP, clipP);
 
             Position3 normalizedP[3];
-
-            for (int i = 0; i < 3; i++)
-            {
-                normalizedP[i].x = clipP[i].x / clipP[i].w;
-                normalizedP[i].y = clipP[i].y / clipP[i].w;
-                normalizedP[i].z = clipP[i].z / clipP[i].w;
-            }
+            convertClipToNormalized(clipP, normalizedP);
 
             Position2 screenP[3];
+            convertNormalizedToScreen(normalizedP, screenP);
 
-            for (int i = 0; i < 3; i++)
-            {
-                screenP[i].x = ((normalizedP[i].x + 1) / 2) * WIDTH;
-                screenP[i].y = (1 - (normalizedP[i].y + 1) / 2) * HEIGHT;
-            }
+            DrawFilledTriangle(screenP[0], screenP[1], screenP[2], COLOR_BLUE);
 
-            DrawLine((int)screenP[0].x, (int)screenP[0].y, (int)screenP[1].x, (int)screenP[1].y, COLOR_RED);
-            DrawLine((int)screenP[1].x, (int)screenP[1].y, (int)screenP[2].x, (int)screenP[2].y, COLOR_RED);
-            DrawLine((int)screenP[2].x, (int)screenP[2].y, (int)screenP[0].x, (int)screenP[0].y, COLOR_RED);
+            // DrawLine((int)screenP[0].x, (int)screenP[0].y, (int)screenP[1].x, (int)screenP[1].y, COLOR_RED);
+            // DrawLine((int)screenP[1].x, (int)screenP[1].y, (int)screenP[2].x, (int)screenP[2].y, COLOR_RED);
+            // DrawLine((int)screenP[2].x, (int)screenP[2].y, (int)screenP[0].x, (int)screenP[0].y, COLOR_RED);
         }
     }
 }
