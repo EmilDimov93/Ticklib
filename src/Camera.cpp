@@ -5,6 +5,8 @@
 
 #include <iostream>
 
+#include "InputManager.hpp"
+
 float Camera::x()
 {
     return position.x;
@@ -35,7 +37,7 @@ Position3 Camera::getUp()
     return up;
 }
 
-void Camera::updateState(InputManager *input)
+void Camera::updateState()
 {
     // Frame delta
     static LARGE_INTEGER frequency;
@@ -76,29 +78,29 @@ void Camera::updateState(InputManager *input)
     float cs = cosf(rotation.pitch);
     float sn = sinf(rotation.pitch);
 
-    if (input->isDown(TL_KEY_W))
+    if (isDown(TL_KEY_W))
     {
         position.x += sn * speed * delta;
         position.z += cs * speed * delta;
     }
-    if (input->isDown(TL_KEY_S))
+    if (isDown(TL_KEY_S))
     {
         position.x -= sn * speed * delta;
         position.z -= cs * speed * delta;
     }
 
-    if (input->isDown(TL_KEY_A))
+    if (isDown(TL_KEY_A))
     {
         position.x += cs * speed * delta;
         position.z -= sn * speed * delta;
     }
-    if (input->isDown(TL_KEY_D))
+    if (isDown(TL_KEY_D))
     {
         position.x -= cs * speed * delta;
         position.z += sn * speed * delta;
     }
 
-    if (input->isDown(TL_MOUSE_BTN_LEFT))
+    if (isDown(TL_MOUSE_BTN_LEFT))
     {
         rotation.pitch -= md.x * 0.01f;
         rotation.yaw -= md.y * 0.01f;

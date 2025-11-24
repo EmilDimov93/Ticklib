@@ -23,5 +23,5 @@ public:
     Position3 getRight();
     Position3 getUp();
 
-    void updateState(InputManager *input);
+    void updateState();
 };

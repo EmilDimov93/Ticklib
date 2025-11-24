@@ -97,28 +97,16 @@ typedef enum
     TL_KEY_RIGHT_ALT = VK_RMENU
 } TLKey;
 
-class InputManager
-{
-public:
-    InputManager();
+void refreshInput();
 
-    void refresh();
+bool isDown(TLMouseBtn key);
+bool isUp(TLMouseBtn key);
+bool isPressed(TLMouseBtn key);
+bool isReleased(TLMouseBtn key);
 
-    bool isDown(TLMouseBtn key);
-    bool isUp(TLMouseBtn key);
-    bool isPressed(TLMouseBtn key);
-    bool isReleased(TLMouseBtn key);
+bool isDown(TLKey key);
+bool isUp(TLKey key);
+bool isPressed(TLKey key);
+bool isReleased(TLKey key);
 
-    bool isDown(TLKey key);
-    bool isUp(TLKey key);
-    bool isPressed(TLKey key);
-    bool isReleased(TLKey key);
-
-    Position2 getMousePos();
-
-private:
-    KeyState mouseBtnStates[TL_MOUSE_BTN_COUNT];
-    KeyState keyStates[TL_KEY_COUNT];
-
-    Position2 mousePosition;
-};
+Position2 getMousePos();

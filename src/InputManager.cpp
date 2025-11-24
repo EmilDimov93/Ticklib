@@ -4,18 +4,12 @@
 #include "InputManager.hpp"
 #include <windows.h>
 
-InputManager::InputManager()
-{
-    for (size_t i = 0; i < TL_MOUSE_BTN_COUNT; i++)
-        mouseBtnStates[i] = KEY_STATE_UP;
+KeyState mouseBtnStates[TL_MOUSE_BTN_COUNT];
+KeyState keyStates[TL_KEY_COUNT];
 
-    for (size_t i = 0; i < TL_KEY_COUNT; i++)
-        keyStates[i] = KEY_STATE_UP;
+Position2 mousePosition;
 
-    mousePosition = {0, 0};
-}
-
-void InputManager::refresh()
+void refreshInput()
 {
     for (int i = 0; i < TL_KEY_COUNT; i++)
     {
@@ -60,55 +54,63 @@ void InputManager::refresh()
     }
 }
 
-bool InputManager::isDown(TLMouseBtn btn)
+bool isDown(TLMouseBtn btn)
 {
-    if (btn >= TL_MOUSE_BTN_COUNT) return false;
+    if (btn >= TL_MOUSE_BTN_COUNT)
+        return false;
     return mouseBtnStates[btn] == KEY_STATE_DOWN || mouseBtnStates[btn] == KEY_STATE_PRESSED;
 }
 
-bool InputManager::isUp(TLMouseBtn btn)
+bool isUp(TLMouseBtn btn)
 {
-    if (btn >= TL_MOUSE_BTN_COUNT) return false;
+    if (btn >= TL_MOUSE_BTN_COUNT)
+        return false;
     return mouseBtnStates[btn] == KEY_STATE_UP || mouseBtnStates[btn] == KEY_STATE_RELEASED;
 }
 
-bool InputManager::isPressed(TLMouseBtn btn)
+bool isPressed(TLMouseBtn btn)
 {
-    if (btn >= TL_MOUSE_BTN_COUNT) return false;
+    if (btn >= TL_MOUSE_BTN_COUNT)
+        return false;
     return mouseBtnStates[btn] == KEY_STATE_PRESSED;
 }
 
-bool InputManager::isReleased(TLMouseBtn btn)
+bool isReleased(TLMouseBtn btn)
 {
-    if (btn >= TL_MOUSE_BTN_COUNT) return false;
+    if (btn >= TL_MOUSE_BTN_COUNT)
+        return false;
     return mouseBtnStates[btn] == KEY_STATE_RELEASED;
 }
 
-bool InputManager::isDown(TLKey key)
+bool isDown(TLKey key)
 {
-    if (key >= TL_KEY_COUNT) return false;
+    if (key >= TL_KEY_COUNT)
+        return false;
     return keyStates[key] == KEY_STATE_DOWN || keyStates[key] == KEY_STATE_PRESSED;
 }
 
-bool InputManager::isUp(TLKey key)
+bool isUp(TLKey key)
 {
-    if (key >= TL_KEY_COUNT) return false;
+    if (key >= TL_KEY_COUNT)
+        return false;
     return keyStates[key] == KEY_STATE_UP || keyStates[key] == KEY_STATE_RELEASED;
 }
 
-bool InputManager::isPressed(TLKey key)
+bool isPressed(TLKey key)
 {
-    if (key >= TL_KEY_COUNT) return false;
+    if (key >= TL_KEY_COUNT)
+        return false;
     return keyStates[key] == KEY_STATE_PRESSED;
 }
 
-bool InputManager::isReleased(TLKey key)
+bool isReleased(TLKey key)
 {
-    if (key >= TL_KEY_COUNT) return false;
+    if (key >= TL_KEY_COUNT)
+        return false;
     return keyStates[key] == KEY_STATE_RELEASED;
 }
 
-Position2 InputManager::getMousePos()
+Position2 getMousePos()
 {
     return mousePosition;
 }

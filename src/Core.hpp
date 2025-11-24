@@ -12,7 +12,11 @@
 #include "colors.hpp"
 #include "definitions.hpp"
 
-void Init(Size2 windowSize);
+extern std::vector<Mesh> meshes;
+
+bool loadOBJ(const std::string &filename, std::vector<Triangle> &outTriangles);
+
+void Init(int windowWidth, int windowHeight);
 
 bool WindowOpen();
 
@@ -22,13 +26,8 @@ void DrawLine(int x1, int y0, int x2, int y2, int color);
 
 void DrawFilledTriangle(const Position2& p0, const Position2& p1, const Position2& p2, int color);
 
-class DrawManager{
-public:
-    std::vector<Mesh> meshes;
+uint16_t GetFps();
 
-    DrawManager() = default;
+void addMesh(std::string fileName, Position3 position, uint32_t color);
 
-    DrawManager(const std::vector<Mesh>& m) : meshes(m) {}
-
-    void DrawMeshes(Camera camera);
-};
+void DrawMeshes();

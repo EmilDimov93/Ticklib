@@ -16,17 +16,72 @@
 #endif
 
 #include <algorithm>
+#include <fstream>
+#include <sstream>
+
+#include "InputManager.hpp"
+
+std::vector<Mesh> meshes;
 
 HWND hwnd;
 
 Size2 screenSize;
 
-static uint32_t pixels[1000 * 1000];
+uint16_t fps;
 
-struct Vec3
+uint32_t *pixels;
+
+Camera camera;
+
+uint16_t GetFps(){
+    return fps;
+}
+
+bool loadOBJ(const std::string &filename, std::vector<Triangle> &outTriangles)
 {
-    float x, y, z;
-};
+    std::ifstream file(filename);
+    if (!file.is_open())
+    {
+        std::cerr << "Failed to open OBJ file: " << filename << std::endl;
+        return false;
+    }
+
+    std::vector<Position3> vertices;
+    std::string line;
+
+    while (std::getline(file, line))
+    {
+        std::stringstream ss(line);
+        std::string prefix;
+        ss >> prefix;
+
+        if (prefix == "v")
+        {
+            float x, y, z;
+            ss >> x >> y >> z;
+            vertices.push_back(Position3(x, y, z));
+        }
+        else if (prefix == "f")
+        {
+            int idx[3];
+            for (int i = 0; i < 3; i++)
+            {
+                std::string vert;
+                ss >> vert;
+                size_t slash = vert.find('/');
+                if (slash != std::string::npos)
+                    vert = vert.substr(0, slash);
+                idx[i] = std::stoi(vert) - 1;
+            }
+            outTriangles.push_back(Triangle(
+                vertices[idx[0]],
+                vertices[idx[1]],
+                vertices[idx[2]]));
+        }
+    }
+
+    return true;
+}
 
 void DrawLine(int x1, int y1, int x2, int y2, int color)
 {
@@ -152,8 +207,10 @@ bool WindowOpen()
     MSG msg{};
     while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE))
     {
-        if (msg.message == WM_QUIT)
+        if (msg.message == WM_QUIT){
+            free(pixels);
             return false;
+        }
         TranslateMessage(&msg);
         DispatchMessageA(&msg);
     }
@@ -163,19 +220,24 @@ bool WindowOpen()
     count++;
     if (GetTickCount() - start >= 1000)
     {
-        printf("Frames this second: %d\n", count);
         start = GetTickCount();
+        fps = count;
         count = 0;
     }
+
+    refreshInput();
+    camera.updateState();
 
     SetCursor(cursor);
     return true;
 }
 
-void Init(Size2 windowSize)
+void Init(int windowWidth, int windowHeight)
 {
-    screenSize.w = windowSize.w;
-    screenSize.h = windowSize.h;
+    screenSize.w = windowWidth;
+    screenSize.h = windowHeight;
+
+    pixels = (uint32_t*)malloc(screenSize.w * screenSize.h * sizeof(uint32_t));
 
     HINSTANCE hInstance = GetModuleHandle(nullptr);
 
@@ -196,6 +258,18 @@ void Init(Size2 windowSize)
     ClearBackground(COLOR_BLACK);
     cursor = LoadCursor(nullptr, IDC_ARROW);
     start = GetTickCount();
+}
+
+void addMesh(std::string fileName, Position3 position, uint32_t color){
+    std::vector<Triangle> tris;
+    if (!loadOBJ(fileName, tris))
+    {
+        std::cerr << "Failed to load model: " << fileName << std::endl;
+    }
+
+    Mesh mesh(tris, position, color);
+
+    meshes.push_back(mesh);
 }
 
 void convertTriToView(Triangle tri, Camera camera, Position3 position, Vec4 out[3])
@@ -258,7 +332,7 @@ void convertNormalizedToScreen(Position3 normalizedP[3], Position2 out[3])
     }
 }
 
-void DrawManager::DrawMeshes(Camera camera)
+void DrawMeshes()
 {
     for (Mesh mesh : meshes)
     {
