@@ -3,6 +3,8 @@
 
 #include "Core.hpp"
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 #define WIDTH 1000
 #define HEIGHT 1000
@@ -15,21 +17,66 @@
 
 #define aspectRatio 1
 
+bool loadOBJ(const std::string &filename, std::vector<Triangle> &outTriangles)
+{
+    std::ifstream file(filename);
+    if (!file.is_open())
+    {
+        std::cerr << "Failed to open OBJ file: " << filename << std::endl;
+        return false;
+    }
+
+    std::vector<Position3> vertices;
+    std::string line;
+
+    while (std::getline(file, line))
+    {
+        std::stringstream ss(line);
+        std::string prefix;
+        ss >> prefix;
+
+        if (prefix == "v")
+        {
+            // Vertex
+            float x, y, z;
+            ss >> x >> y >> z;
+            vertices.push_back(Position3(x, y, z));
+        }
+        else if (prefix == "f")
+        {
+            // Face (triangle)
+            int idx[3];
+            for (int i = 0; i < 3; i++)
+            {
+                std::string vert;
+                ss >> vert;
+                size_t slash = vert.find('/');
+                if (slash != std::string::npos)
+                    vert = vert.substr(0, slash); // ignore texture/normal
+                idx[i] = std::stoi(vert) - 1;     // OBJ indices start at 1
+            }
+            outTriangles.push_back(Triangle(
+                vertices[idx[0]],
+                vertices[idx[1]],
+                vertices[idx[2]]));
+        }
+    }
+
+    return true;
+}
+
 int main()
 {
     Init({WIDTH, HEIGHT});
 
-    Triangle t1(
-        Position3(-1.0f, -1.0f, 5.0f),
-        Position3(1.0f, -1.0f, 5.0f),
-        Position3(0.0f, 1.0f, 5.0f));
-
-    Triangle t2(
-        Position3(0, 0, 1),
-        Position3(1, 0, 1),
-        Position3(0, 1, 1));
-
-    std::vector<Triangle> list = {t1, t2};
+    std::vector<Triangle> list;
+    if (!loadOBJ("teapot.obj", list))
+    {
+        std::cerr << "Failed to load model" << std::endl;
+    }
+    else{
+        std::cout << "Good";
+    }
 
     Mesh mesh(list);
 
@@ -40,7 +87,6 @@ int main()
     while (WindowOpen())
     {
         input.refresh();
-        Position2 mousePos = input.getMousePos();
 
         camera.updateState(&input);
 
@@ -59,6 +105,20 @@ int main()
                 viewP[i].y = p.x * camera.getUp().x + p.y * camera.getUp().y + p.z * camera.getUp().z;
                 viewP[i].z = p.x * camera.getForward().x + p.y * camera.getForward().y + p.z * camera.getForward().z;
                 viewP[i].w = 1;
+            }
+
+            bool behind = false;
+            for (int i = 0; i < 3; i++)
+            {
+                if (viewP[i].z <= 0)
+                {
+                    behind = true;
+                    break;
+                }
+            }
+            if (behind)
+            {
+                continue;
             }
 
             Vec4 clipP[3];
@@ -88,22 +148,9 @@ int main()
                 screenP[i].y = (1 - (normalizedP[i].y + 1) / 2) * HEIGHT;
             }
 
-            bool onScreen = false;
-            for (int i = 0; i < 3; i++)
-            {
-                if (screenP[i].x >= 0 && screenP[i].x < WIDTH && screenP[i].y >= 0 && screenP[i].y < HEIGHT)
-                {
-                    onScreen = true;
-                    break;
-                }
-            }
-
-            if (onScreen)
-            {
-                DrawLine((int)screenP[0].x, (int)screenP[0].y, (int)screenP[1].x, (int)screenP[1].y, COLOR_RED);
-                DrawLine((int)screenP[1].x, (int)screenP[1].y, (int)screenP[2].x, (int)screenP[2].y, COLOR_RED);
-                DrawLine((int)screenP[2].x, (int)screenP[2].y, (int)screenP[0].x, (int)screenP[0].y, COLOR_RED);
-            }
+            DrawLine((int)screenP[0].x, (int)screenP[0].y, (int)screenP[1].x, (int)screenP[1].y, COLOR_RED);
+            DrawLine((int)screenP[1].x, (int)screenP[1].y, (int)screenP[2].x, (int)screenP[2].y, COLOR_RED);
+            DrawLine((int)screenP[2].x, (int)screenP[2].y, (int)screenP[0].x, (int)screenP[0].y, COLOR_RED);
         }
     }
 }
