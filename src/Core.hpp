@@ -30,4 +30,7 @@ uint16_t GetFps();
 
 void addMesh(std::string fileName, Position3 position, uint32_t color);
 
+void scaleMesh(uint32_t index, float scale);
+void scaleMesh(std::string name, float scale);
+
 void DrawMeshes();

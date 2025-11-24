@@ -11,6 +11,8 @@ int main()
     addMesh("teapot.obj", {0, 1, 0}, COLOR_GRAY);
     addMesh("cube.obj", {0, 0, 0}, COLOR_BROWN);
 
+    scaleMesh("teapot.obj", 0.5f);
+
     while (WindowOpen())
     {
         ClearBackground(COLOR_WHITE);

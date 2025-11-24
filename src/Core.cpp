@@ -33,7 +33,8 @@ uint32_t *pixels;
 
 Camera camera;
 
-uint16_t GetFps(){
+uint16_t GetFps()
+{
     return fps;
 }
 
@@ -207,7 +208,8 @@ bool WindowOpen()
     MSG msg{};
     while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE))
     {
-        if (msg.message == WM_QUIT){
+        if (msg.message == WM_QUIT)
+        {
             free(pixels);
             return false;
         }
@@ -237,7 +239,7 @@ void Init(int windowWidth, int windowHeight)
     screenSize.w = windowWidth;
     screenSize.h = windowHeight;
 
-    pixels = (uint32_t*)malloc(screenSize.w * screenSize.h * sizeof(uint32_t));
+    pixels = (uint32_t *)malloc(screenSize.w * screenSize.h * sizeof(uint32_t));
 
     HINSTANCE hInstance = GetModuleHandle(nullptr);
 
@@ -260,16 +262,43 @@ void Init(int windowWidth, int windowHeight)
     start = GetTickCount();
 }
 
-void addMesh(std::string fileName, Position3 position, uint32_t color){
+void addMesh(std::string fileName, Position3 position, uint32_t color)
+{
     std::vector<Triangle> tris;
     if (!loadOBJ(fileName, tris))
     {
         std::cerr << "Failed to load model: " << fileName << std::endl;
     }
 
-    Mesh mesh(tris, position, color);
+    Mesh mesh(tris, position, color, fileName);
 
     meshes.push_back(mesh);
+}
+
+void scaleMesh(uint32_t index, float scale)
+{
+    for (Triangle &tri : meshes[index].tris)
+    {
+        for (Position3 &vertice : tri.vertices)
+        {
+            vertice.x *= scale;
+            vertice.y *= scale;
+            vertice.z *= scale;
+        }
+    }
+}
+
+void scaleMesh(std::string name, float scale)
+{
+    int i = 0;
+    for (Mesh mesh : meshes)
+    {
+        if (mesh.name == name)
+        {
+            scaleMesh(i, scale);
+        }
+        i++;
+    }
 }
 
 void convertTriToView(Triangle tri, Camera camera, Position3 position, Vec4 out[3])
