@@ -8,6 +8,8 @@ add_executable(Ticklib
     src/test.cpp
     src/Core.cpp
     src/InputManager.cpp
+    src/Mesh.cpp
+    src/Camera.cpp
 )
 
 target_link_libraries(Ticklib

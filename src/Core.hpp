@@ -6,6 +6,9 @@
 #include <functional>
 #include <string>
 
+#include "InputManager.hpp"
+#include "Mesh.hpp"
+#include "Camera.hpp"
 #include "colors.hpp"
 #include "definitions.hpp"
 
@@ -16,3 +19,7 @@ bool WindowOpen();
 void ClearBackground(uint32_t color);
 
 void DrawLine(int x1, int y0, int x2, int y2, int color);
+
+class DrawManager{
+    std::vector<Mesh> meshes;
+};

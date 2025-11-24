@@ -5,6 +5,8 @@
 
 #define PI 3.1415927f
 
+#define speed 5.0f
+
 struct Position2
 {
     float x;
@@ -22,6 +24,15 @@ struct Position3
 
     Position3() : x(0), y(0), z(0) {}
     Position3(float newX, float newY, float newZ) : x(newX), y(newY), z(newZ) {}
+};
+
+struct Rotation2
+{
+    float pitch;
+    float yaw;
+
+    Rotation2() : pitch(0), yaw(0) {}
+    Rotation2(float newPitch, float newYaw) : pitch(newPitch), yaw(newYaw) {}
 };
 
 struct Size2
