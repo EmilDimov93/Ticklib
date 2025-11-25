@@ -38,12 +38,11 @@ uint16_t GetFps()
     return fps;
 }
 
-bool loadOBJ(const std::string &filename, std::vector<Triangle> &outTriangles)
+bool loadObject(const std::string &filename, std::vector<Triangle> &outTriangles)
 {
     std::ifstream file(filename);
     if (!file.is_open())
     {
-        std::cerr << "Failed to open OBJ file: " << filename << std::endl;
         return false;
     }
 
@@ -262,10 +261,10 @@ void Init(int windowWidth, int windowHeight)
     start = GetTickCount();
 }
 
-void addMesh(std::string fileName, Position3 position, uint32_t color)
+void AddMesh(std::string fileName, Position3 position, uint32_t color)
 {
     std::vector<Triangle> tris;
-    if (!loadOBJ(fileName, tris))
+    if (!loadObject(fileName, tris))
     {
         std::cerr << "Failed to load model: " << fileName << std::endl;
     }
@@ -275,7 +274,7 @@ void addMesh(std::string fileName, Position3 position, uint32_t color)
     meshes.push_back(mesh);
 }
 
-void scaleMesh(uint32_t index, float scale)
+void ScaleMesh(uint32_t index, float scale)
 {
     for (Triangle &tri : meshes[index].tris)
     {
@@ -288,17 +287,20 @@ void scaleMesh(uint32_t index, float scale)
     }
 }
 
-void scaleMesh(std::string name, float scale)
+void ScaleMesh(std::string name, float scale)
 {
     int i = 0;
     for (Mesh mesh : meshes)
     {
         if (mesh.name == name)
         {
-            scaleMesh(i, scale);
+            ScaleMesh(i, scale);
+            return;
         }
         i++;
     }
+
+    std::cerr << "Couldn't find mesh: " << name << std::endl;
 }
 
 void convertTriToView(Triangle tri, Camera camera, Position3 position, Vec4 out[3])
