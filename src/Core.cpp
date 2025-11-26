@@ -303,6 +303,35 @@ void ScaleMesh(std::string name, float scale)
     std::cerr << "Couldn't find mesh: " << name << std::endl;
 }
 
+void MoveMesh(uint32_t index, Position3 delta)
+{
+    for (Triangle &tri : meshes[index].tris)
+    {
+        for (Position3 &vertice : tri.vertices)
+        {
+            vertice.x += delta.x;
+            vertice.y += delta.y;
+            vertice.z += delta.z;
+        }
+    }
+}
+
+void MoveMesh(std::string name, Position3 delta)
+{
+    int i = 0;
+    for (Mesh mesh : meshes)
+    {
+        if (mesh.name == name)
+        {
+            MoveMesh(i, delta);
+            return;
+        }
+        i++;
+    }
+
+    std::cerr << "Couldn't find mesh: " << name << std::endl;
+}
+
 void convertTriToView(Triangle tri, Camera camera, Position3 position, Vec4 out[3])
 {
     for (int i = 0; i < 3; i++)
