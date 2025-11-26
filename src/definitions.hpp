@@ -47,6 +47,16 @@ struct Rotation2
     Rotation2(float newPitch, float newYaw) : pitch(newPitch), yaw(newYaw) {}
 };
 
+struct Rotation3
+{
+    float pitch;
+    float yaw;
+    float roll;
+
+    Rotation3() : pitch(0), yaw(0), roll(0) {}
+    Rotation3(float newPitch, float newYaw, float newRoll) : pitch(newPitch), yaw(newYaw), roll(newRoll) {}
+};
+
 struct Size2
 {
     int w;

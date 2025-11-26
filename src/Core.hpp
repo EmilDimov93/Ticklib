@@ -24,6 +24,9 @@ void AddMesh(std::string fileName, Position3 position, uint32_t color);
 void MoveMesh(uint32_t index, Position3 delta);
 void MoveMesh(std::string name, Position3 delta);
 
+void RotateMesh(uint32_t index, Rotation3 rotation);
+void RotateMesh(std::string name, Rotation3 rotation);
+
 void ScaleMesh(uint32_t index, Scale3 scale);
 void ScaleMesh(std::string name, Scale3 scale);
 void ScaleMesh(uint32_t index, float scale);
