@@ -7,6 +7,12 @@
 
 #include "InputManager.hpp"
 
+float speed = 5.0f;
+
+void Camera::setSpeed(float newSpeed){
+    speed = newSpeed;
+}
+
 float Camera::x()
 {
     return position.x;

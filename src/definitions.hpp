@@ -7,7 +7,6 @@
 
 #define zNear 0.01f
 #define fov 60
-#define speed 5.0f
 
 struct Position2
 {

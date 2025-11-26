@@ -35,6 +35,10 @@ Camera camera;
 
 float zFar = 1000;
 
+void setCameraSpeed(float newSpeed){
+    camera.setSpeed(newSpeed);
+}
+
 void setZFar(float newZFar)
 {
     zFar = newZFar;
@@ -120,8 +124,27 @@ void DrawLine(int x1, int y1, int x2, int y2, int color)
     }
 }
 
+void DrawUnfilledTriangle(const Position2 &p0, const Position2 &p1, const Position2 &p2, int color){
+    DrawLine((int)p0.x, (int)p0.y, (int)p1.x, (int)p1.y, color);
+    DrawLine((int)p1.x, (int)p1.y, (int)p2.x, (int)p2.y, color);
+    DrawLine((int)p2.x, (int)p2.y, (int)p0.x, (int)p0.y, color);
+}
+
 void DrawFilledTriangle(const Position2 &p0, const Position2 &p1, const Position2 &p2, int color)
 {
+    Position2 ptsCheck[3] = {p0, p1, p2};
+    for (int i = 0; i < 3; i++)
+    {
+        if (std::isnan(ptsCheck[i].x) || std::isnan(ptsCheck[i].y) ||
+            std::isinf(ptsCheck[i].x) || std::isinf(ptsCheck[i].y) ||
+            ptsCheck[i].x < -10000 || ptsCheck[i].x > screenSize.w + 10000 ||
+            ptsCheck[i].y < -10000 || ptsCheck[i].y > screenSize.h + 10000)
+        {
+            std::cout << "YEP" << std::endl;
+            return; // skip unsafe triangle
+        }
+    }
+
     const Position2 *pts[3] = {&p0, &p1, &p2};
     if (pts[1]->y < pts[0]->y)
         std::swap(pts[0], pts[1]);
@@ -410,10 +433,12 @@ bool isTriInView(Vec4 viewP[3])
 {
     for (int i = 0; i < 3; i++)
     {
-        if (viewP[i].z <= 0)
-        {
+        if (viewP[i].z <= 0.01f)
             return false;
-        }
+
+        if (std::isnan(viewP[i].x) || std::isnan(viewP[i].y) || std::isnan(viewP[i].z) ||
+            std::isinf(viewP[i].x) || std::isinf(viewP[i].y) || std::isinf(viewP[i].z))
+            return false;
     }
 
     return true;
@@ -451,7 +476,7 @@ void convertNormalizedToScreen(Position3 normalizedP[3], Position2 out[3])
     }
 }
 
-void DrawMeshes()
+void DrawMeshes(bool trianglesFilled)
 {
     for (Mesh mesh : meshes)
     {
@@ -474,7 +499,12 @@ void DrawMeshes()
             Position2 screenP[3];
             convertNormalizedToScreen(normalizedP, screenP);
 
-            DrawFilledTriangle(screenP[0], screenP[1], screenP[2], mesh.color);
+            if(trianglesFilled){
+                DrawFilledTriangle(screenP[0], screenP[1], screenP[2], mesh.color);
+            }
+            else{
+                DrawUnfilledTriangle(screenP[0], screenP[1], screenP[2], mesh.color);
+            }
         }
     }
 }

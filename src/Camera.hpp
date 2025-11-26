@@ -23,5 +23,7 @@ public:
     Position3 getRight();
     Position3 getUp();
 
+    void setSpeed(float newSpeed);
+
     void updateState();
 };

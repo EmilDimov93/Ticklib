@@ -32,6 +32,7 @@ void ScaleMesh(std::string name, Scale3 scale);
 void ScaleMesh(uint32_t index, float scale);
 void ScaleMesh(std::string name, float scale);
 
-void DrawMeshes();
+void DrawMeshes(bool trianglesFilled);
 
+void setCameraSpeed(float newSpeed);
 void setZFar(float newZFar);
