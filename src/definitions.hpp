@@ -5,8 +5,7 @@
 
 #define PI 3.1415927f
 
-#define zFar 1000
-#define zNear 1
+#define zNear 0.01f
 #define fov 60
 #define speed 5.0f
 

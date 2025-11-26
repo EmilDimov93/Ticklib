@@ -28,3 +28,5 @@ void MoveMesh(uint32_t index, Position3 delta);
 void MoveMesh(std::string name, Position3 delta);
 
 void DrawMeshes();
+
+void setZFar(float newZFar);

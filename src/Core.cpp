@@ -33,6 +33,12 @@ uint32_t *pixels;
 
 Camera camera;
 
+float zFar = 1000;
+
+void setZFar(float newZFar){
+    zFar = newZFar;
+}
+
 uint16_t GetFps()
 {
     return fps;
