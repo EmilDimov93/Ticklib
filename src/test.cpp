@@ -10,7 +10,7 @@ int main()
     AddMesh("teapot.obj", {0, 1, 0}, COLOR_GRAY);
     AddMesh("cube.obj", {0, 0, 0}, COLOR_BROWN);
 
-    ScaleMesh("teapot.obj", {0.5f, 0.5f, 0.5f});
+    ScaleMesh("teapot.obj", 0.5f);
 
     while (WindowOpen())
     {

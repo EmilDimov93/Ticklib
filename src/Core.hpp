@@ -26,6 +26,8 @@ void MoveMesh(std::string name, Position3 delta);
 
 void ScaleMesh(uint32_t index, Scale3 scale);
 void ScaleMesh(std::string name, Scale3 scale);
+void ScaleMesh(uint32_t index, float scale);
+void ScaleMesh(std::string name, float scale);
 
 void DrawMeshes();
 

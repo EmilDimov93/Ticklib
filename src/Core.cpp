@@ -309,6 +309,14 @@ void ScaleMesh(std::string name, Scale3 scale)
     std::cerr << "Couldn't find mesh: " << name << std::endl;
 }
 
+void ScaleMesh(uint32_t index, float scale){
+    ScaleMesh(index, {scale, scale, scale});
+}
+
+void ScaleMesh(std::string name, float scale){
+    ScaleMesh(name, {scale, scale, scale});
+}
+
 void MoveMesh(uint32_t index, Position3 delta)
 {
     for (Triangle &tri : meshes[index].tris)
