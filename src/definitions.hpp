@@ -28,6 +28,16 @@ struct Position3
     Position3(float newX, float newY, float newZ) : x(newX), y(newY), z(newZ) {}
 };
 
+struct Scale3
+{
+    float x;
+    float y;
+    float z;
+
+    Scale3() : x(0), y(0), z(0) {}
+    Scale3(float newX, float newY, float newZ) : x(newX), y(newY), z(newZ) {}
+};
+
 struct Rotation2
 {
     float pitch;

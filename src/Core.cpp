@@ -280,20 +280,20 @@ void AddMesh(std::string fileName, Position3 position, uint32_t color)
     meshes.push_back(mesh);
 }
 
-void ScaleMesh(uint32_t index, float scale)
+void ScaleMesh(uint32_t index, Scale3 scale)
 {
     for (Triangle &tri : meshes[index].tris)
     {
         for (Position3 &vertice : tri.vertices)
         {
-            vertice.x *= scale;
-            vertice.y *= scale;
-            vertice.z *= scale;
+            vertice.x *= scale.x;
+            vertice.y *= scale.y;
+            vertice.z *= scale.z;
         }
     }
 }
 
-void ScaleMesh(std::string name, float scale)
+void ScaleMesh(std::string name, Scale3 scale)
 {
     int i = 0;
     for (Mesh mesh : meshes)
