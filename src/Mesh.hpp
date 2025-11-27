@@ -12,20 +12,29 @@ private:
 public:
     std::vector<Triangle> tris;
     Position3 position;
-    uint32_t color;
 
     std::string name;
 
     Mesh()
-        : position{0, 0, 0}, color(0xFFFFFFFF), name("")
+        : position{0, 0, 0}, name("")
     {
     }
 
     Mesh(const std::vector<Triangle> &t,
          const Position3 &pos = {0, 0, 0},
-         uint32_t col = 0xFFFFFFFF,
          const std::string &n = "")
-        : tris(t), position(pos), color(col), name(n)
+        : tris(t), position(pos), name(n)
     {
     }
 };
+
+void MoveMesh(uint32_t index, Position3 delta);
+void MoveMesh(std::string name, Position3 delta);
+
+void RotateMesh(uint32_t index, Rotation3 rotation);
+void RotateMesh(std::string name, Rotation3 rotation);
+
+void ScaleMesh(uint32_t index, Scale3 scale);
+void ScaleMesh(std::string name, Scale3 scale);
+void ScaleMesh(uint32_t index, float scale);
+void ScaleMesh(std::string name, float scale);

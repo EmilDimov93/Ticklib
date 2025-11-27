@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0
 
 #include "Core.hpp"
+#include "iostream"
 
 int main()
 {
@@ -17,12 +18,12 @@ int main()
 
     RotateMesh("teapot.obj", {0, 0.5f, 0});
 
-    setCameraSpeed(100.0f);
-
     while (WindowOpen())
     {
         ClearBackground(COLOR_LIGHT_BLUE);
 
         DrawMeshes(true);
+
+        std::cout << GetFps() << std::endl;
     }
 }

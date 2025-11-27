@@ -6,10 +6,8 @@
 #include <string>
 
 #include "InputManager.hpp"
-#include "Mesh.hpp"
-#include "Camera.hpp"
-#include "colors.hpp"
 #include "definitions.hpp"
+#include "Mesh.hpp"
 
 void Init(int windowWidth, int windowHeight);
 
@@ -20,17 +18,6 @@ void ClearBackground(uint32_t color);
 uint16_t GetFps();
 
 void AddMesh(std::string fileName, Position3 position, uint32_t color);
-
-void MoveMesh(uint32_t index, Position3 delta);
-void MoveMesh(std::string name, Position3 delta);
-
-void RotateMesh(uint32_t index, Rotation3 rotation);
-void RotateMesh(std::string name, Rotation3 rotation);
-
-void ScaleMesh(uint32_t index, Scale3 scale);
-void ScaleMesh(std::string name, Scale3 scale);
-void ScaleMesh(uint32_t index, float scale);
-void ScaleMesh(std::string name, float scale);
 
 void DrawMeshes(bool trianglesFilled);
 

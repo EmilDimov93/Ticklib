@@ -4,22 +4,16 @@
 #include "Core.hpp"
 
 #include <windows.h>
-#include <cstdint>
 #include <iostream>
 
-#ifdef max
 #undef max
-#endif
-
-#ifdef min
 #undef min
-#endif
 
 #include <algorithm>
 #include <fstream>
 #include <sstream>
 
-#include "InputManager.hpp"
+#include "Camera.hpp"
 
 std::vector<Mesh> meshes;
 
@@ -35,6 +29,9 @@ Camera camera;
 
 float zFar = 1000;
 
+DWORD start = 0;
+HCURSOR cursor;
+
 void setCameraSpeed(float newSpeed){
     camera.setSpeed(newSpeed);
 }
@@ -49,9 +46,9 @@ uint16_t GetFps()
     return fps;
 }
 
-bool loadObject(const std::string &filename, std::vector<Triangle> &outTriangles)
+bool loadObject(const std::string &fileName, std::vector<Triangle> &out, uint32_t color)
 {
-    std::ifstream file(filename);
+    std::ifstream file(fileName);
     if (!file.is_open())
     {
         return false;
@@ -74,20 +71,22 @@ bool loadObject(const std::string &filename, std::vector<Triangle> &outTriangles
         }
         else if (prefix == "f")
         {
-            int idx[3];
+            int indices[3];
             for (int i = 0; i < 3; i++)
             {
                 std::string vert;
                 ss >> vert;
                 size_t slash = vert.find('/');
-                if (slash != std::string::npos)
+                if (slash != std::string::npos){
                     vert = vert.substr(0, slash);
-                idx[i] = std::stoi(vert) - 1;
+                }
+                indices[i] = std::stoi(vert) - 1;
             }
-            outTriangles.push_back(Triangle(
-                vertices[idx[0]],
-                vertices[idx[1]],
-                vertices[idx[2]]));
+            out.push_back(Triangle(
+                vertices[indices[0]],
+                vertices[indices[1]],
+                vertices[indices[2]],
+                color));
         }
     }
 
@@ -132,19 +131,6 @@ void DrawUnfilledTriangle(const Position2 &p0, const Position2 &p1, const Positi
 
 void DrawFilledTriangle(const Position2 &p0, const Position2 &p1, const Position2 &p2, int color)
 {
-    Position2 ptsCheck[3] = {p0, p1, p2};
-    for (int i = 0; i < 3; i++)
-    {
-        if (std::isnan(ptsCheck[i].x) || std::isnan(ptsCheck[i].y) ||
-            std::isinf(ptsCheck[i].x) || std::isinf(ptsCheck[i].y) ||
-            ptsCheck[i].x < -10000 || ptsCheck[i].x > screenSize.w + 10000 ||
-            ptsCheck[i].y < -10000 || ptsCheck[i].y > screenSize.h + 10000)
-        {
-            std::cout << "YEP" << std::endl;
-            return; // skip unsafe triangle
-        }
-    }
-
     const Position2 *pts[3] = {&p0, &p1, &p2};
     if (pts[1]->y < pts[0]->y)
         std::swap(pts[0], pts[1]);
@@ -228,41 +214,6 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     }
 }
 
-int count = 0;
-DWORD start = 0;
-HCURSOR cursor;
-
-bool WindowOpen()
-{
-    MSG msg{};
-    while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE))
-    {
-        if (msg.message == WM_QUIT)
-        {
-            free(pixels);
-            return false;
-        }
-        TranslateMessage(&msg);
-        DispatchMessageA(&msg);
-    }
-
-    InvalidateRect(hwnd, nullptr, FALSE);
-
-    count++;
-    if (GetTickCount() - start >= 1000)
-    {
-        start = GetTickCount();
-        fps = count;
-        count = 0;
-    }
-
-    refreshInput();
-    camera.updateState();
-
-    SetCursor(cursor);
-    return true;
-}
-
 void Init(int windowWidth, int windowHeight)
 {
     screenSize.w = windowWidth;
@@ -291,127 +242,49 @@ void Init(int windowWidth, int windowHeight)
     start = GetTickCount();
 }
 
+bool WindowOpen()
+{
+    MSG msg{};
+    while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE))
+    {
+        if (msg.message == WM_QUIT)
+        {
+            free(pixels);
+            return false;
+        }
+        TranslateMessage(&msg);
+        DispatchMessageA(&msg);
+    }
+
+    InvalidateRect(hwnd, nullptr, FALSE);
+
+    static int count = 0;
+    count++;
+    if (GetTickCount() - start >= 1000)
+    {
+        start = GetTickCount();
+        fps = count;
+        count = 0;
+    }
+
+    refreshInput();
+    camera.updateState();
+
+    SetCursor(cursor);
+    return true;
+}
+
 void AddMesh(std::string fileName, Position3 position, uint32_t color)
 {
     std::vector<Triangle> tris;
-    if (!loadObject(fileName, tris))
+    if (!loadObject(fileName, tris, color))
     {
         std::cerr << "Failed to load model: " << fileName << std::endl;
     }
 
-    Mesh mesh(tris, position, color, fileName);
+    Mesh mesh(tris, position, fileName);
 
     meshes.push_back(mesh);
-}
-
-void MoveMesh(uint32_t index, Position3 delta)
-{
-    for (Triangle &tri : meshes[index].tris)
-    {
-        for (Position3 &vertice : tri.vertices)
-        {
-            vertice.x += delta.x;
-            vertice.y += delta.y;
-            vertice.z += delta.z;
-        }
-    }
-}
-
-void MoveMesh(std::string name, Position3 delta)
-{
-    int i = 0;
-    for (Mesh mesh : meshes)
-    {
-        if (mesh.name == name)
-        {
-            MoveMesh(i, delta);
-            return;
-        }
-        i++;
-    }
-
-    std::cerr << "Couldn't find mesh: " << name << std::endl;
-}
-
-void RotateMesh(uint32_t index, Rotation3 rotation)
-{
-    float cx = cosf(rotation.pitch), sx = sinf(rotation.pitch);
-    float cy = cosf(rotation.yaw), sy = sinf(rotation.yaw);
-    float cz = cosf(rotation.roll), sz = sinf(rotation.roll);
-
-    for (Triangle &tri : meshes[index].tris)
-    {
-        for (Position3 &v : tri.vertices)
-        {
-            float y1 = v.y * cx - v.z * sx;
-            float z1 = v.y * sx + v.z * cx;
-
-            float x2 = v.x * cy + z1 * sy;
-            float z2 = -v.x * sy + z1 * cy;
-
-            float x3 = x2 * cz - y1 * sz;
-            float y3 = x2 * sz + y1 * cz;
-
-            v.x = x3;
-            v.y = y3;
-            v.z = z2;
-        }
-    }
-}
-
-void RotateMesh(std::string name, Rotation3 rotation)
-{
-    int i = 0;
-    for (Mesh mesh : meshes)
-    {
-        if (mesh.name == name)
-        {
-            RotateMesh(i, rotation);
-            return;
-        }
-        i++;
-    }
-
-    std::cerr << "Couldn't find mesh: " << name << std::endl;
-}
-
-void ScaleMesh(uint32_t index, Scale3 scale)
-{
-    for (Triangle &tri : meshes[index].tris)
-    {
-        for (Position3 &vertice : tri.vertices)
-        {
-            vertice.x *= scale.x;
-            vertice.y *= scale.y;
-            vertice.z *= scale.z;
-        }
-    }
-}
-
-void ScaleMesh(std::string name, Scale3 scale)
-{
-    int i = 0;
-    for (Mesh mesh : meshes)
-    {
-        if (mesh.name == name)
-        {
-            ScaleMesh(i, scale);
-            return;
-        }
-        i++;
-    }
-
-    std::cerr << "Couldn't find mesh: " << name << std::endl;
-}
-
-void ScaleMesh(uint32_t index, float scale)
-{
-    ScaleMesh(index, {scale, scale, scale});
-}
-
-void ScaleMesh(std::string name, float scale)
-{
-    ScaleMesh(name, {scale, scale, scale});
 }
 
 void convertTriToView(Triangle tri, Camera camera, Position3 position, Vec4 out[3])
@@ -478,9 +351,9 @@ void convertNormalizedToScreen(Position3 normalizedP[3], Position2 out[3])
 
 void DrawMeshes(bool trianglesFilled)
 {
-    for (Mesh mesh : meshes)
+    for (const auto& mesh : meshes)
     {
-        for (Triangle tri : mesh.tris)
+        for (const auto& tri : mesh.tris)
         {
             Vec4 viewP[3];
             convertTriToView(tri, camera, mesh.position, viewP);
@@ -500,10 +373,10 @@ void DrawMeshes(bool trianglesFilled)
             convertNormalizedToScreen(normalizedP, screenP);
 
             if(trianglesFilled){
-                DrawFilledTriangle(screenP[0], screenP[1], screenP[2], mesh.color);
+                DrawFilledTriangle(screenP[0], screenP[1], screenP[2], tri.color);
             }
             else{
-                DrawUnfilledTriangle(screenP[0], screenP[1], screenP[2], mesh.color);
+                DrawUnfilledTriangle(screenP[0], screenP[1], screenP[2], tri.color);
             }
         }
     }

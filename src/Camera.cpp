@@ -3,7 +3,10 @@
 
 #include "Camera.hpp"
 
-#include <iostream>
+#include <cmath>
+
+using std::cosf;
+using std::sinf;
 
 #include "InputManager.hpp"
 

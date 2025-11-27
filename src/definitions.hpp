@@ -3,6 +3,10 @@
 
 #pragma once
 
+#include <cstdint>
+
+#include "colors.hpp"
+
 #define PI 3.1415927f
 
 #define zNear 0.01f
@@ -78,15 +82,17 @@ struct Size3
 struct Triangle
 {
     Position3 vertices[3];
+    uint32_t color;
 
     Triangle()
-        : vertices{ Position3(), Position3(), Position3() }
+        : vertices{Position3(), Position3(), Position3()}, color(COLOR_GRAY)
     {}
 
     Triangle(const Position3& a,
              const Position3& b,
-             const Position3& c)
-        : vertices{ a, b, c }
+             const Position3& c,
+             uint32_t col)
+        : vertices{ a, b, c }, color(col)
     {}
 };
 
