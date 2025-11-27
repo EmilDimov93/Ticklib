@@ -22,4 +22,5 @@ void AddMesh(std::string fileName, Position3 position, uint32_t color);
 void DrawMeshes(bool trianglesFilled);
 
 void setCameraSpeed(float newSpeed);
-void setZFar(float newZFar);
+
+void setFov(int newFov);

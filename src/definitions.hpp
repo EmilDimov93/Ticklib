@@ -9,9 +9,6 @@
 
 #define PI 3.1415927f
 
-#define zNear 0.01f
-#define fov 60
-
 struct Position2
 {
     float x;

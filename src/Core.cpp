@@ -27,18 +27,19 @@ uint32_t *pixels;
 
 Camera camera;
 
-float zFar = 1000;
-
 DWORD start = 0;
 HCURSOR cursor;
 
-void setCameraSpeed(float newSpeed){
-    camera.setSpeed(newSpeed);
+uint8_t fov = 60;
+
+void setFov(int newFov){
+    if(newFov > 0 && newFov < 180){
+        fov = newFov;
+    }
 }
 
-void setZFar(float newZFar)
-{
-    zFar = newZFar;
+void setCameraSpeed(float newSpeed){
+    camera.setSpeed(newSpeed);
 }
 
 uint16_t GetFps()
@@ -287,13 +288,13 @@ void AddMesh(std::string fileName, Position3 position, uint32_t color)
     meshes.push_back(mesh);
 }
 
-void convertTriToView(Triangle tri, Camera camera, Position3 position, Vec4 out[3])
+void convertTriToView(Triangle tri, Camera camera, Position3 meshPosition, Vec4 out[3])
 {
     for (int i = 0; i < 3; i++)
     {
-        Position3 p = {tri.vertices[i].x + position.x - camera.x(),
-                       tri.vertices[i].y + position.y - camera.y(),
-                       tri.vertices[i].z + position.z - camera.z()};
+        Position3 p = {tri.vertices[i].x + meshPosition.x - camera.x(),
+                       tri.vertices[i].y + meshPosition.y - camera.y(),
+                       tri.vertices[i].z + meshPosition.z - camera.z()};
 
         out[i].x = p.x * camera.getRight().x + p.y * camera.getRight().y + p.z * camera.getRight().z;
         out[i].y = p.x * camera.getUp().x + p.y * camera.getUp().y + p.z * camera.getUp().z;
@@ -325,7 +326,7 @@ void convertViewToClip(Vec4 viewP[3], Vec4 out[3])
     {
         out[i].x = viewP[i].x * f / aspectRatio;
         out[i].y = viewP[i].y * f;
-        out[i].z = viewP[i].z * (zFar + zNear) / (zNear - zFar) + (2 * zFar * zNear) / (zNear - zFar);
+        out[i].z = viewP[i].z;
         out[i].w = -viewP[i].z;
     }
 }
