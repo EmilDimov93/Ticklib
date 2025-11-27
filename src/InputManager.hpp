@@ -99,14 +99,14 @@ typedef enum
 
 void refreshInput();
 
-bool isDown(TLMouseBtn key);
-bool isUp(TLMouseBtn key);
-bool isPressed(TLMouseBtn key);
-bool isReleased(TLMouseBtn key);
+bool tlIsDown(TLMouseBtn key);
+bool tlIsUp(TLMouseBtn key);
+bool tlIsPressed(TLMouseBtn key);
+bool tlIsReleased(TLMouseBtn key);
 
-bool isDown(TLKey key);
-bool isUp(TLKey key);
-bool isPressed(TLKey key);
-bool isReleased(TLKey key);
+bool tlIsDown(TLKey key);
+bool tlIsUp(TLKey key);
+bool tlIsPressed(TLKey key);
+bool tlIsReleased(TLKey key);
 
-Position2 getMousePos();
+Position2 tlGetMousePos();

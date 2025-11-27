@@ -9,18 +9,21 @@
 #include "definitions.hpp"
 #include "Mesh.hpp"
 
-void Init(int windowWidth, int windowHeight);
+#define TL_DEFAULT_CAMERA_SPEED 5.0f
+#define TL_DEFAULT_FOV 60
 
-bool WindowOpen();
+void tlInit(int windowWidth, int windowHeight);
 
-void ClearBackground(uint32_t color);
+bool tlWindowOpen();
 
-uint16_t GetFps();
+void tlClearBackground(uint32_t color);
 
-void AddMesh(std::string fileName, Position3 position, uint32_t color);
+uint16_t tlGetFps();
 
-void DrawMeshes(bool trianglesFilled);
+void tlAddMesh(std::string fileName, Position3 position, uint32_t color);
 
-void setCameraSpeed(float newSpeed);
+void tlDrawMeshes(bool trianglesFilled);
 
-void setFov(int newFov);
+void tlSetCameraSpeed(float newSpeed);
+
+void tlSetFov(int newFov);

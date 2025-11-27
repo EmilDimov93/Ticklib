@@ -54,63 +54,63 @@ void refreshInput()
     }
 }
 
-bool isDown(TLMouseBtn btn)
+bool tlIsDown(TLMouseBtn btn)
 {
     if (btn >= TL_MOUSE_BTN_COUNT)
         return false;
     return mouseBtnStates[btn] == KEY_STATE_DOWN || mouseBtnStates[btn] == KEY_STATE_PRESSED;
 }
 
-bool isUp(TLMouseBtn btn)
+bool tlIsUp(TLMouseBtn btn)
 {
     if (btn >= TL_MOUSE_BTN_COUNT)
         return false;
     return mouseBtnStates[btn] == KEY_STATE_UP || mouseBtnStates[btn] == KEY_STATE_RELEASED;
 }
 
-bool isPressed(TLMouseBtn btn)
+bool tlIsPressed(TLMouseBtn btn)
 {
     if (btn >= TL_MOUSE_BTN_COUNT)
         return false;
     return mouseBtnStates[btn] == KEY_STATE_PRESSED;
 }
 
-bool isReleased(TLMouseBtn btn)
+bool tlIsReleased(TLMouseBtn btn)
 {
     if (btn >= TL_MOUSE_BTN_COUNT)
         return false;
     return mouseBtnStates[btn] == KEY_STATE_RELEASED;
 }
 
-bool isDown(TLKey key)
+bool tlIsDown(TLKey key)
 {
     if (key >= TL_KEY_COUNT)
         return false;
     return keyStates[key] == KEY_STATE_DOWN || keyStates[key] == KEY_STATE_PRESSED;
 }
 
-bool isUp(TLKey key)
+bool tlIsUp(TLKey key)
 {
     if (key >= TL_KEY_COUNT)
         return false;
     return keyStates[key] == KEY_STATE_UP || keyStates[key] == KEY_STATE_RELEASED;
 }
 
-bool isPressed(TLKey key)
+bool tlIsPressed(TLKey key)
 {
     if (key >= TL_KEY_COUNT)
         return false;
     return keyStates[key] == KEY_STATE_PRESSED;
 }
 
-bool isReleased(TLKey key)
+bool tlIsReleased(TLKey key)
 {
     if (key >= TL_KEY_COUNT)
         return false;
     return keyStates[key] == KEY_STATE_RELEASED;
 }
 
-Position2 getMousePos()
+Position2 tlGetMousePos()
 {
     return mousePosition;
 }

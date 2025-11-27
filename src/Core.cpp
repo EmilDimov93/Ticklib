@@ -32,17 +32,17 @@ HCURSOR cursor;
 
 uint8_t fov = 60;
 
-void setFov(int newFov){
+void tlSetFov(int newFov){
     if(newFov > 0 && newFov < 180){
         fov = newFov;
     }
 }
 
-void setCameraSpeed(float newSpeed){
+void tlSetCameraSpeed(float newSpeed){
     camera.setSpeed(newSpeed);
 }
 
-uint16_t GetFps()
+uint16_t tlGetFps()
 {
     return fps;
 }
@@ -177,7 +177,7 @@ void DrawFilledTriangle(const Position2 &p0, const Position2 &p1, const Position
     }
 }
 
-void ClearBackground(uint32_t color)
+void tlClearBackground(uint32_t color)
 {
     for (int i = 0; i < screenSize.w * screenSize.h; ++i)
         pixels[i] = color;
@@ -215,7 +215,7 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     }
 }
 
-void Init(int windowWidth, int windowHeight)
+void tlInit(int windowWidth, int windowHeight)
 {
     screenSize.w = windowWidth;
     screenSize.h = windowHeight;
@@ -238,12 +238,12 @@ void Init(int windowWidth, int windowHeight)
 
     ShowWindow(hwnd, SW_SHOWDEFAULT);
 
-    ClearBackground(COLOR_BLACK);
+    tlClearBackground(COLOR_BLACK);
     cursor = LoadCursor(nullptr, IDC_ARROW);
     start = GetTickCount();
 }
 
-bool WindowOpen()
+bool tlWindowOpen()
 {
     MSG msg{};
     while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -275,7 +275,7 @@ bool WindowOpen()
     return true;
 }
 
-void AddMesh(std::string fileName, Position3 position, uint32_t color)
+void tlAddMesh(std::string fileName, Position3 position, uint32_t color)
 {
     std::vector<Triangle> tris;
     if (!loadObject(fileName, tris, color))
@@ -350,7 +350,7 @@ void convertNormalizedToScreen(Position3 normalizedP[3], Position2 out[3])
     }
 }
 
-void DrawMeshes(bool trianglesFilled)
+void tlDrawMeshes(bool trianglesFilled)
 {
     for (const auto& mesh : meshes)
     {

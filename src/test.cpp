@@ -6,22 +6,22 @@
 
 int main()
 {
-    Init(1000, 1000);
+    tlInit(1000, 1000);
 
-    AddMesh("cube.obj", {0, -0.5f, -7}, COLOR_BROWN);
-    AddMesh("teapot.obj", {0, -0.1f, -7}, COLOR_GRAY);
-    AddMesh("cow.obj", {-2, -0.1f, -7}, COLOR_PINK);
+    tlAddMesh("cube.obj", {0, -0.5f, -7}, COLOR_BROWN);
+    tlAddMesh("teapot.obj", {0, -0.1f, -7}, COLOR_GRAY);
+    tlAddMesh("cow.obj", {-2, -0.1f, -7}, COLOR_PINK);
 
-    ScaleMesh("teapot.obj", 0.1f);
-    ScaleMesh("cube.obj", 0.4f);
-    ScaleMesh("cow.obj", 0.25f);
+    tlScaleMesh("teapot.obj", 0.1f);
+    tlScaleMesh("cube.obj", 0.4f);
+    tlScaleMesh("cow.obj", 0.25f);
 
-    RotateMesh("teapot.obj", {0, 0.5f, 0});
+    tlRotateMesh("teapot.obj", {0, 0.5f, 0});
 
-    while (WindowOpen())
+    while (tlWindowOpen())
     {
-        ClearBackground(COLOR_LIGHT_BLUE);
+        tlClearBackground(COLOR_LIGHT_BLUE);
 
-        DrawMeshes(true);
+        tlDrawMeshes(true);
     }
 }

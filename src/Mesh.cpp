@@ -7,7 +7,7 @@
 
 extern std::vector<Mesh> meshes;
 
-void MoveMesh(uint32_t index, Position3 delta)
+void tlMoveMesh(uint32_t index, Position3 delta)
 {
     for (Triangle& tri : meshes[index].tris)
     {
@@ -20,14 +20,14 @@ void MoveMesh(uint32_t index, Position3 delta)
     }
 }
 
-void MoveMesh(std::string name, Position3 delta)
+void tlMoveMesh(std::string name, Position3 delta)
 {
     int i = 0;
     for (const Mesh& mesh : meshes)
     {
         if (mesh.name == name)
         {
-            MoveMesh(i, delta);
+            tlMoveMesh(i, delta);
             return;
         }
         i++;
@@ -37,7 +37,7 @@ void MoveMesh(std::string name, Position3 delta)
 }
 
 // Euler angle rotation formula
-void RotateMesh(uint32_t index, Rotation3 rotation)
+void tlRotateMesh(uint32_t index, Rotation3 rotation)
 {
     float cp = cosf(rotation.pitch), sp = sinf(rotation.pitch);
     float cy = cosf(rotation.yaw), sy = sinf(rotation.yaw);
@@ -67,14 +67,14 @@ void RotateMesh(uint32_t index, Rotation3 rotation)
     }
 }
 
-void RotateMesh(std::string name, Rotation3 rotation)
+void tlRotateMesh(std::string name, Rotation3 rotation)
 {
     int i = 0;
     for (const Mesh& mesh : meshes)
     {
         if (mesh.name == name)
         {
-            RotateMesh(i, rotation);
+            tlRotateMesh(i, rotation);
             return;
         }
         i++;
@@ -83,7 +83,7 @@ void RotateMesh(std::string name, Rotation3 rotation)
     std::cerr << "Couldn't find mesh: " << name << std::endl;
 }
 
-void ScaleMesh(uint32_t index, Scale3 scale)
+void tlScaleMesh(uint32_t index, Scale3 scale)
 {
     for (Triangle& tri : meshes[index].tris)
     {
@@ -96,14 +96,14 @@ void ScaleMesh(uint32_t index, Scale3 scale)
     }
 }
 
-void ScaleMesh(std::string name, Scale3 scale)
+void tlScaleMesh(std::string name, Scale3 scale)
 {
     int i = 0;
     for (const Mesh& mesh : meshes)
     {
         if (mesh.name == name)
         {
-            ScaleMesh(i, scale);
+            tlScaleMesh(i, scale);
             return;
         }
         i++;
@@ -112,12 +112,12 @@ void ScaleMesh(std::string name, Scale3 scale)
     std::cerr << "Couldn't find mesh: " << name << std::endl;
 }
 
-void ScaleMesh(uint32_t index, float scale)
+void tlScaleMesh(uint32_t index, float scale)
 {
-    ScaleMesh(index, {scale, scale, scale});
+    tlScaleMesh(index, {scale, scale, scale});
 }
 
-void ScaleMesh(std::string name, float scale)
+void tlScaleMesh(std::string name, float scale)
 {
-    ScaleMesh(name, {scale, scale, scale});
+    tlScaleMesh(name, {scale, scale, scale});
 }

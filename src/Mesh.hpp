@@ -28,13 +28,13 @@ public:
     }
 };
 
-void MoveMesh(uint32_t index, Position3 delta);
-void MoveMesh(std::string name, Position3 delta);
+void tlMoveMesh(uint32_t index, Position3 delta);
+void tlMoveMesh(std::string name, Position3 delta);
 
-void RotateMesh(uint32_t index, Rotation3 rotation);
-void RotateMesh(std::string name, Rotation3 rotation);
+void tlRotateMesh(uint32_t index, Rotation3 rotation);
+void tlRotateMesh(std::string name, Rotation3 rotation);
 
-void ScaleMesh(uint32_t index, Scale3 scale);
-void ScaleMesh(std::string name, Scale3 scale);
-void ScaleMesh(uint32_t index, float scale);
-void ScaleMesh(std::string name, float scale);
+void tlScaleMesh(uint32_t index, Scale3 scale);
+void tlScaleMesh(std::string name, Scale3 scale);
+void tlScaleMesh(uint32_t index, float scale);
+void tlScaleMesh(std::string name, float scale);

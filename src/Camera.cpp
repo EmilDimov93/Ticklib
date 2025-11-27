@@ -87,29 +87,29 @@ void Camera::updateState()
     float cs = cosf(rotation.pitch);
     float sn = sinf(rotation.pitch);
 
-    if (isDown(TL_KEY_W))
+    if (tlIsDown(TL_KEY_W))
     {
         position.x += sn * speed * delta;
         position.z += cs * speed * delta;
     }
-    if (isDown(TL_KEY_S))
+    if (tlIsDown(TL_KEY_S))
     {
         position.x -= sn * speed * delta;
         position.z -= cs * speed * delta;
     }
 
-    if (isDown(TL_KEY_A))
+    if (tlIsDown(TL_KEY_A))
     {
         position.x += cs * speed * delta;
         position.z -= sn * speed * delta;
     }
-    if (isDown(TL_KEY_D))
+    if (tlIsDown(TL_KEY_D))
     {
         position.x -= cs * speed * delta;
         position.z += sn * speed * delta;
     }
 
-    if (isDown(TL_MOUSE_BTN_LEFT))
+    if (tlIsDown(TL_MOUSE_BTN_LEFT))
     {
         rotation.pitch -= md.x * 0.01f;
         rotation.yaw -= md.y * 0.01f;
