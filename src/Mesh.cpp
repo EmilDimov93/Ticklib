@@ -9,9 +9,9 @@ extern std::vector<Mesh> meshes;
 
 void MoveMesh(uint32_t index, Position3 delta)
 {
-    for (Triangle &tri : meshes[index].tris)
+    for (Triangle& tri : meshes[index].tris)
     {
-        for (Position3 &vertice : tri.vertices)
+        for (Position3& vertice : tri.vertices)
         {
             vertice.x += delta.x;
             vertice.y += delta.y;
@@ -23,7 +23,7 @@ void MoveMesh(uint32_t index, Position3 delta)
 void MoveMesh(std::string name, Position3 delta)
 {
     int i = 0;
-    for (Mesh mesh : meshes)
+    for (const Mesh& mesh : meshes)
     {
         if (mesh.name == name)
         {
@@ -36,24 +36,29 @@ void MoveMesh(std::string name, Position3 delta)
     std::cerr << "Couldn't find mesh: " << name << std::endl;
 }
 
+// Euler angle rotation formula
 void RotateMesh(uint32_t index, Rotation3 rotation)
 {
-    float cx = cosf(rotation.pitch), sx = sinf(rotation.pitch);
+    float cp = cosf(rotation.pitch), sp = sinf(rotation.pitch);
     float cy = cosf(rotation.yaw), sy = sinf(rotation.yaw);
-    float cz = cosf(rotation.roll), sz = sinf(rotation.roll);
+    float cr = cosf(rotation.roll), sr = sinf(rotation.roll);
 
-    for (Triangle &tri : meshes[index].tris)
+    for (Triangle& tri : meshes[index].tris)
     {
-        for (Position3 &v : tri.vertices)
+        for (Position3& v : tri.vertices)
         {
-            float y1 = v.y * cx - v.z * sx;
-            float z1 = v.y * sx + v.z * cx;
+            float x = v.x;
+            float y = v.y;
+            float z = v.z;
 
-            float x2 = v.x * cy + z1 * sy;
-            float z2 = -v.x * sy + z1 * cy;
+            float y1 = y * cp - z * sp;
+            float z1 = y * sp + z * cp;
 
-            float x3 = x2 * cz - y1 * sz;
-            float y3 = x2 * sz + y1 * cz;
+            float x2 = x * cy + z1 * sy;
+            float z2 = -x * sy + z1 * cy;
+
+            float x3 = x2 * cr - y1 * sr;
+            float y3 = x2 * sr + y1 * cr;
 
             v.x = x3;
             v.y = y3;
@@ -65,7 +70,7 @@ void RotateMesh(uint32_t index, Rotation3 rotation)
 void RotateMesh(std::string name, Rotation3 rotation)
 {
     int i = 0;
-    for (Mesh mesh : meshes)
+    for (const Mesh& mesh : meshes)
     {
         if (mesh.name == name)
         {
@@ -80,9 +85,9 @@ void RotateMesh(std::string name, Rotation3 rotation)
 
 void ScaleMesh(uint32_t index, Scale3 scale)
 {
-    for (Triangle &tri : meshes[index].tris)
+    for (Triangle& tri : meshes[index].tris)
     {
-        for (Position3 &vertice : tri.vertices)
+        for (Position3& vertice : tri.vertices)
         {
             vertice.x *= scale.x;
             vertice.y *= scale.y;
@@ -94,7 +99,7 @@ void ScaleMesh(uint32_t index, Scale3 scale)
 void ScaleMesh(std::string name, Scale3 scale)
 {
     int i = 0;
-    for (Mesh mesh : meshes)
+    for (const Mesh& mesh : meshes)
     {
         if (mesh.name == name)
         {

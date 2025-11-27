@@ -23,7 +23,5 @@ int main()
         ClearBackground(COLOR_LIGHT_BLUE);
 
         DrawMeshes(true);
-
-        std::cout << GetFps() << std::endl;
     }
 }
