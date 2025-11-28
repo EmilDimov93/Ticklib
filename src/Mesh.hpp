@@ -2,9 +2,25 @@
 // Licensed under the Apache License, Version 2.0
 
 #include <vector>
-#include <string>
 
 #include "ticklib.hpp"
+
+struct Triangle
+{
+    Position3 vertices[3];
+    uint32_t color;
+
+    Triangle()
+        : vertices{Position3(), Position3(), Position3()}, color(TlColors::Gray)
+    {}
+
+    Triangle(const Position3& a,
+             const Position3& b,
+             const Position3& c,
+             uint32_t col)
+        : vertices{ a, b, c }, color(col)
+    {}
+};
 
 class Mesh
 {

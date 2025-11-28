@@ -3,7 +3,6 @@
 
 #include "ticklib.hpp"
 
-#include <windows.h>
 #include <iostream>
 
 #undef max
@@ -15,6 +14,8 @@
 
 #include "Mesh.hpp"
 #include "Camera.hpp"
+
+#define PI 3.1415927f
 
 struct Size2
 {
@@ -259,7 +260,7 @@ void tlInit(int windowWidth, int windowHeight)
 
     ShowWindow(hwnd, SW_SHOWDEFAULT);
 
-    tlClearBackground(COLOR_BLACK);
+    tlClearBackground(TlColors::Black);
     cursor = LoadCursor(nullptr, IDC_ARROW);
     start = GetTickCount();
 }

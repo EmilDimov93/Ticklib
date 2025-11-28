@@ -2,7 +2,17 @@
 // Licensed under the Apache License, TLrsion 2.0
 
 #include "ticklib.hpp"
-#include <windows.h>
+
+#define TL_MOUSE_BTN_COUNT 5
+#define TL_KEY_COUNT 256
+
+typedef enum
+{
+    KEY_STATE_DOWN,
+    KEY_STATE_UP,
+    KEY_STATE_PRESSED,
+    KEY_STATE_RELEASED
+} KeyState;
 
 KeyState mouseBtnStates[TL_MOUSE_BTN_COUNT];
 KeyState keyStates[TL_KEY_COUNT];

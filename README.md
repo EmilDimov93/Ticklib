@@ -1,7 +1,6 @@
 # Ticklib
 
-![Version](https://img.shields.io/github/v/release/EmilDimov93/Ticklib?style=plastic)
-![Total Commits](https://img.shields.io/github/commit-activity/t/EmilDimov93/Ticklib?style=plastic) 
+![Version](https://img.shields.io/github/v/release/EmilDimov93/Ticklib?style=plastic&color=green)
 ![C++](https://img.shields.io/badge/language-C++-555555?style=plastic) 
 ![Windows](https://img.shields.io/badge/platform-Windows-0078D6?style=plastic)
 

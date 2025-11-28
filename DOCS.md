@@ -1,11 +1,8 @@
 # Documentation
 
-## Notes
+## Functions
 
 All functions start with the prefix `tl`
-All definitions start with the prefix `TL`
-
-## Functions
 
 #### tlInit
 
@@ -170,43 +167,13 @@ Structure with floats x, y and z
 
 Structure with floats pitch, yaw and roll
 
-#### Triangle
+### Colors
 
-Structure with an array of 3 Position3 objects serving as the vertices of a triangle. Also has a color field
-
-### Constants
-
-#### TL_DEFAULT_CAMERA_SPEED
-
-Used to return to the default camera speed with tlSetCameraSpeed()
-
-#### TL_DEFAULT_FOV
-
-Used to return to the default field of view with tlSetFov
-
-#### TL_MOUSE_BTN_COUNT
-
-The amount of mouse buttons
-
-#### TL_KEY_COUNT
-
-The amount of keyboard keys
-
-#### Colors
-
-All colors start with the prefix COLOR_ and resume with the color in capital letters(example: COLOR_WHITE)
+All colors are in the namespace TlColors.
 
 Included colors: white, black, red, green, blue, light blue, yellow, cyan, magenta, orange, purple, pink, brown, gray, light gray, dark gray
 
 ### Enums
-
-#### KeyState
-
-Includes 4 key states:
-- KEY_STATE_DOWN
-- KEY_STATE_UP
-- KEY_STATE_PRESSED
-- KEY_STATE_RELEASED
 
 #### TLMouseBtn
 

@@ -12,9 +12,9 @@ int main()
     tlInit(600, 300);
 
     // Add meshes at specified positions with colors
-    tlAddMesh("../../models/cube.obj", {0, -0.5f, -7}, COLOR_BROWN);
-    tlAddMesh("../../models/teapot.obj", {0, -0.1f, -7}, COLOR_GRAY);
-    tlAddMesh("../../models/cow.obj", {-2, -0.1f, -7}, COLOR_PURPLE);
+    tlAddMesh("../../models/cube.obj", {0, -0.5f, -7}, TlColors::Brown);
+    tlAddMesh("../../models/teapot.obj", {0, -0.1f, -7}, TlColors::Gray);
+    tlAddMesh("../../models/cow.obj", {-2, -0.1f, -7}, TlColors::Purple);
 
     // Scale meshes by filename
     tlScaleMesh("teapot.obj", 0.1f);
@@ -28,7 +28,7 @@ int main()
     while (tlWindowOpen())
     {
         // Clear the screen with a light blue background
-        tlClearBackground(COLOR_LIGHT_BLUE);
+        tlClearBackground(TlColors::LightBlue);
 
         // Draw all meshes with filled triangles
         tlDrawMeshes(true);

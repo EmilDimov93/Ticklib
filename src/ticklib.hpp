@@ -6,122 +6,25 @@
 #include <string>
 #include <windows.h>
 
-#include <cstdint>
-
-#define PI 3.1415927f
-
-#define COLOR_WHITE 0xFFFFFFFF
-#define COLOR_BLACK 0xFF000000
-#define COLOR_RED 0xFFFF0000
-#define COLOR_GREEN 0xFF00FF00
-#define COLOR_BLUE 0xFF0000FF
-#define COLOR_LIGHT_BLUE 0xFFA0C8FF
-#define COLOR_YELLOW 0xFFFFFF00
-#define COLOR_CYAN 0xFF00FFFF
-#define COLOR_MAGENTA 0xFFFF00FF
-#define COLOR_ORANGE 0xFFFFA500
-#define COLOR_PURPLE 0xFF800080
-#define COLOR_PINK 0xFFFF69B4
-#define COLOR_BROWN 0xFF8B4513
-#define COLOR_GRAY 0xFF808080
-#define COLOR_LIGHT_GRAY 0xFFD3D3D3
-#define COLOR_DARK_GRAY 0xFF404040
-
-struct Position2
+struct TlColors
 {
-    float x;
-    float y;
-
-    Position2() : x(0), y(0) {}
-    Position2(float newX, float newY) : x(newX), y(newY) {}
+    static constexpr uint32_t White = 0xFFFFFFFF;
+    static constexpr uint32_t Black = 0xFF000000;
+    static constexpr uint32_t Red = 0xFFFF0000;
+    static constexpr uint32_t Green = 0xFF00FF00;
+    static constexpr uint32_t Blue = 0xFF0000FF;
+    static constexpr uint32_t Yellow = 0xFFFFFF00;
+    static constexpr uint32_t Cyan = 0xFF00FFFF;
+    static constexpr uint32_t Magenta = 0xFFFF00FF;
+    static constexpr uint32_t Orange = 0xFFFFA500;
+    static constexpr uint32_t Purple = 0xFF800080;
+    static constexpr uint32_t Pink = 0xFFFF69B4;
+    static constexpr uint32_t Brown = 0xFF8B4513;
+    static constexpr uint32_t Gray = 0xFF808080;
+    static constexpr uint32_t LightGray = 0xFFD3D3D3;
+    static constexpr uint32_t DarkGray = 0xFF404040;
+    static constexpr uint32_t LightBlue = 0xFFA0C8FF;
 };
-
-struct Position3
-{
-    float x;
-    float y;
-    float z;
-
-    Position3() : x(0), y(0), z(0) {}
-    Position3(float newX, float newY, float newZ) : x(newX), y(newY), z(newZ) {}
-};
-
-struct Scale3
-{
-    float x;
-    float y;
-    float z;
-
-    Scale3() : x(0), y(0), z(0) {}
-    Scale3(float newX, float newY, float newZ) : x(newX), y(newY), z(newZ) {}
-};
-
-struct Rotation3
-{
-    float pitch;
-    float yaw;
-    float roll;
-
-    Rotation3() : pitch(0), yaw(0), roll(0) {}
-    Rotation3(float newPitch, float newYaw, float newRoll) : pitch(newPitch), yaw(newYaw), roll(newRoll) {}
-};
-
-struct Triangle
-{
-    Position3 vertices[3];
-    uint32_t color;
-
-    Triangle()
-        : vertices{Position3(), Position3(), Position3()}, color(COLOR_GRAY)
-    {}
-
-    Triangle(const Position3& a,
-             const Position3& b,
-             const Position3& c,
-             uint32_t col)
-        : vertices{ a, b, c }, color(col)
-    {}
-};
-
-#define TL_DEFAULT_CAMERA_SPEED 5.0f
-#define TL_DEFAULT_FOV 60
-
-void tlInit(int windowWidth, int windowHeight);
-
-bool tlWindowOpen();
-
-void tlClearBackground(uint32_t color);
-
-uint16_t tlGetFps();
-
-void tlAddMesh(std::string filePath, Position3 position, uint32_t color);
-
-void tlDrawMeshes(bool trianglesFilled);
-
-void tlSetCameraSpeed(float newSpeed);
-
-void tlSetFov(int newFov);
-
-void tlMoveMesh(uint32_t index, Position3 delta);
-void tlMoveMesh(std::string name, Position3 delta);
-
-void tlRotateMesh(uint32_t index, Rotation3 rotation);
-void tlRotateMesh(std::string name, Rotation3 rotation);
-
-void tlScaleMesh(uint32_t index, Scale3 scale);
-void tlScaleMesh(std::string name, Scale3 scale);
-void tlScaleMesh(uint32_t index, float scale);
-void tlScaleMesh(std::string name, float scale);
-
-typedef enum
-{
-    KEY_STATE_DOWN,
-    KEY_STATE_UP,
-    KEY_STATE_PRESSED,
-    KEY_STATE_RELEASED
-} KeyState;
-
-#define TL_MOUSE_BTN_COUNT 5
 
 typedef enum
 {
@@ -131,8 +34,6 @@ typedef enum
     TL_MOUSE_BTN_X1,
     TL_MOUSE_BTN_X2
 } TLMouseBtn;
-
-#define TL_KEY_COUNT 256
 
 typedef enum
 {
@@ -206,6 +107,65 @@ typedef enum
     TL_KEY_LEFT_ALT = VK_LMENU,
     TL_KEY_RIGHT_ALT = VK_RMENU
 } TLKey;
+
+struct Position2
+{
+    float x, y;
+
+    Position2() : x(0), y(0) {}
+    Position2(float newX, float newY) : x(newX), y(newY) {}
+};
+
+struct Position3
+{
+    float x, y, z;
+
+    Position3() : x(0), y(0), z(0) {}
+    Position3(float newX, float newY, float newZ) : x(newX), y(newY), z(newZ) {}
+};
+
+struct Scale3
+{
+    float x, y, z;
+
+    Scale3() : x(0), y(0), z(0) {}
+    Scale3(float newX, float newY, float newZ) : x(newX), y(newY), z(newZ) {}
+};
+
+struct Rotation3
+{
+    float pitch, yaw, roll;
+
+    Rotation3() : pitch(0), yaw(0), roll(0) {}
+    Rotation3(float newPitch, float newYaw, float newRoll) : pitch(newPitch), yaw(newYaw), roll(newRoll) {}
+};
+
+void tlInit(int windowWidth, int windowHeight);
+
+bool tlWindowOpen();
+
+void tlClearBackground(uint32_t color);
+
+uint16_t tlGetFps();
+
+void tlAddMesh(std::string filePath, Position3 position, uint32_t color);
+
+void tlDrawMeshes(bool trianglesFilled);
+
+void tlSetCameraSpeed(float newSpeed);
+
+void tlSetFov(int newFov);
+
+void tlMoveMesh(uint32_t index, Position3 delta);
+void tlMoveMesh(std::string name, Position3 delta);
+
+void tlRotateMesh(uint32_t index, Rotation3 rotation);
+void tlRotateMesh(std::string name, Rotation3 rotation);
+
+void tlScaleMesh(uint32_t index, Scale3 scale);
+void tlScaleMesh(std::string name, Scale3 scale);
+void tlScaleMesh(uint32_t index, float scale);
+void tlScaleMesh(std::string name, float scale);
 
 bool tlIsDown(TLMouseBtn btn);
 bool tlIsUp(TLMouseBtn btn);
