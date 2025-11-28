@@ -1,4 +1,5 @@
 build/
 .vscode/
+images/
 run.ps1
 git.ps1

@@ -45,6 +45,10 @@ Draws all meshes added to the scene. Must be called every frame. The argument sp
 Arguments:
 - bool trianglesFilled
 
+#### tlGetFps
+
+Returns the current Frames Per Second
+
 #### tlSetCameraSpeed
 
 The camera is handled automatically, but you can change the movement speed with this function

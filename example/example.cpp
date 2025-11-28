@@ -6,7 +6,7 @@
 
 int main()
 {
-    tlInit(600, 300);
+    tlInit(1000, 1000);
 
     tlAddMesh("cube.obj", {0, -0.5f, -7}, COLOR_BROWN);
     tlAddMesh("teapot.obj", {0, -0.1f, -7}, COLOR_GRAY);
@@ -22,6 +22,6 @@ int main()
     {
         tlClearBackground(COLOR_LIGHT_BLUE);
 
-        tlDrawMeshes(true);
+        tlDrawMeshes(false);
     }
 }
