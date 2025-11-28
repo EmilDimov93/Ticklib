@@ -23,7 +23,7 @@ Full documentation is available in [DOCS.md](DOCS.md)
 
 ## Controls
 
-- Move around with `W`, `A`, `S` and `D`
-- Look around by holding the **left mouse button** on the window and moving your cursor
+- *Move*: `W`, `A`, `S`, `D`
+- *Look around*: Hold the **left mouse button** and move the cursor
 
 <img width="731" height="425" alt="unfilled" src="https://github.com/user-attachments/assets/3698e2eb-5e79-4cb0-aa4e-47b185b78a06" />
