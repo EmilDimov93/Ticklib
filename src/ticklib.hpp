@@ -248,10 +248,10 @@ typedef enum
 
 void refreshInput();
 
-bool tlIsDown(TLMouseBtn key);
-bool tlIsUp(TLMouseBtn key);
-bool tlIsPressed(TLMouseBtn key);
-bool tlIsReleased(TLMouseBtn key);
+bool tlIsDown(TLMouseBtn btn);
+bool tlIsUp(TLMouseBtn btn);
+bool tlIsPressed(TLMouseBtn btn);
+bool tlIsReleased(TLMouseBtn btn);
 
 bool tlIsDown(TLKey key);
 bool tlIsUp(TLKey key);
