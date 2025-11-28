@@ -1,7 +1,7 @@
 // Copyright 2025 Emil Dimov
 // Licensed under the Apache License, Version 2.0
 
-#include "Core.hpp"
+#include "ticklib.hpp"
 
 #include <windows.h>
 #include <iostream>
@@ -13,6 +13,7 @@
 #include <fstream>
 #include <sstream>
 
+#include "Mesh.hpp"
 #include "Camera.hpp"
 
 std::vector<Mesh> meshes;
@@ -382,3 +383,14 @@ void tlDrawMeshes(bool trianglesFilled)
         }
     }
 }
+
+void tlMoveMesh(uint32_t index, Position3 delta){MoveMesh(index, delta);}
+void tlMoveMesh(std::string name, Position3 delta){MoveMesh(name, delta);}
+
+void tlRotateMesh(uint32_t index, Rotation3 rotation){RotateMesh(index, rotation);}
+void tlRotateMesh(std::string name, Rotation3 rotation){RotateMesh(name, rotation);}
+
+void tlScaleMesh(uint32_t index, Scale3 scale){ScaleMesh(index, scale);}
+void tlScaleMesh(std::string name, Scale3 scale){ScaleMesh(name, scale);}
+void tlScaleMesh(uint32_t index, float scale){ScaleMesh(index, scale);}
+void tlScaleMesh(std::string name, float scale){ScaleMesh(name, scale);}

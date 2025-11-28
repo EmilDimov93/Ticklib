@@ -8,8 +8,6 @@
 using std::cosf;
 using std::sinf;
 
-#include "InputManager.hpp"
-
 float speed = 5.0f;
 
 void Camera::setSpeed(float newSpeed){

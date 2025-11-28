@@ -1,18 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
-project(Ticklib)
+project(ticklib)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(Ticklib
-    src/test.cpp
-    src/Core.cpp
+add_library(ticklib STATIC
+    src/ticklib.cpp
     src/InputManager.cpp
     src/Mesh.cpp
     src/Camera.cpp
-)
-
-target_link_libraries(Ticklib
-    user32
-    gdi32
 )

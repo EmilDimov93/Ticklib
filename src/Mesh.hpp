@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "definitions.hpp"
+#include "ticklib.hpp"
 
 class Mesh
 {
@@ -28,13 +28,13 @@ public:
     }
 };
 
-void tlMoveMesh(uint32_t index, Position3 delta);
-void tlMoveMesh(std::string name, Position3 delta);
+void MoveMesh(uint32_t index, Position3 delta);
+void MoveMesh(std::string name, Position3 delta);
 
-void tlRotateMesh(uint32_t index, Rotation3 rotation);
-void tlRotateMesh(std::string name, Rotation3 rotation);
+void RotateMesh(uint32_t index, Rotation3 rotation);
+void RotateMesh(std::string name, Rotation3 rotation);
 
-void tlScaleMesh(uint32_t index, Scale3 scale);
-void tlScaleMesh(std::string name, Scale3 scale);
-void tlScaleMesh(uint32_t index, float scale);
-void tlScaleMesh(std::string name, float scale);
+void ScaleMesh(uint32_t index, Scale3 scale);
+void ScaleMesh(std::string name, Scale3 scale);
+void ScaleMesh(uint32_t index, float scale);
+void ScaleMesh(std::string name, float scale);

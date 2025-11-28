@@ -1,7 +1,7 @@
 // Copyright 2025 Emil Dimov
 // Licensed under the Apache License, TLrsion 2.0
 
-#include "InputManager.hpp"
+#include "ticklib.hpp"
 #include <windows.h>
 
 KeyState mouseBtnStates[TL_MOUSE_BTN_COUNT];

@@ -1,8 +1,7 @@
 // Copyright 2025 Emil Dimov
 // Licensed under the Apache License, Version 2.0
 
-#include "definitions.hpp"
-#include "InputManager.hpp"
+#include "ticklib.hpp"
 
 class Camera{
 private:
