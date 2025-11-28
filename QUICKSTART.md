@@ -22,7 +22,27 @@ MyProgram/
 └─ CMakeLists.txt
 ```
 
-## 3. CMake
+## 3. Code
+
+The minimal code you need to create a window is:
+
+```cpp
+#include "ticklib.hpp"
+
+int main()
+{
+    tlInit(600, 300);
+
+    while(tlWindowOpen())
+    {
+        tlClearBackground(COLOR_BLACK);
+    }
+
+    return 0;
+}
+```
+
+## 4. CMake
 
 In your project folder, create a CMakeLists.txt file
 
@@ -46,22 +66,6 @@ cmake ..
 cmake --build . --config Release
 ```
 
-## 4. Code
+This will create a .exe in the build/Release folder
 
-The minimal code you need to create a window is:
-
-```cpp
-#include "ticklib.hpp"
-
-int main()
-{
-    tlInit(600, 300);
-
-    while(tlWindowOpen())
-    {
-        tlClearBackground(COLOR_BLACK);
-    }
-}
-```
-
-Refer to DOCS.md to learn how to add your first mesh!
+#### Refer to DOCS.md to learn how to add your first mesh!

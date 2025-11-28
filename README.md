@@ -34,7 +34,7 @@ Arguments:
 Adds a mesh to the scene. The filename becomes the name of the mesh and the triangles are set to the given color
 
 Arguments:
-- std::string fileName
+- std::string filePath
 - Position3 position
 - uint32_t color
 

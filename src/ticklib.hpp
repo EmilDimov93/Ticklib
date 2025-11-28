@@ -133,7 +133,7 @@ void tlClearBackground(uint32_t color);
 
 uint16_t tlGetFps();
 
-void tlAddMesh(std::string fileName, Position3 position, uint32_t color);
+void tlAddMesh(std::string filePath, Position3 position, uint32_t color);
 
 void tlDrawMeshes(bool trianglesFilled);
 

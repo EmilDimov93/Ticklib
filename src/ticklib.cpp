@@ -276,15 +276,22 @@ bool tlWindowOpen()
     return true;
 }
 
-void tlAddMesh(std::string fileName, Position3 position, uint32_t color)
+std::string getFileName(const std::string& fullPath) {
+    size_t pos = fullPath.find_last_of("/\\");
+    if (pos == std::string::npos) return fullPath;
+    return fullPath.substr(pos + 1);
+}
+
+void tlAddMesh(std::string filePath, Position3 position, uint32_t color)
 {
     std::vector<Triangle> tris;
-    if (!loadObject(fileName, tris, color))
+    if (!loadObject(filePath, tris, color))
     {
-        std::cerr << "Failed to load model: " << fileName << std::endl;
+        std::cerr << "Failed to load model: " << filePath << std::endl;
     }
 
-    Mesh mesh(tris, position, fileName);
+    std::cout << getFileName(filePath) << std::endl;
+    Mesh mesh(tris, position, getFileName(filePath));
 
     meshes.push_back(mesh);
 }
