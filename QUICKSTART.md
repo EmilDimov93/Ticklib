@@ -68,4 +68,4 @@ cmake --build . --config Release
 
 This will create a .exe in the build/Release folder
 
-#### Refer to DOCS.md to learn how to add your first mesh!
+#### Refer to README.md and DOCS.md to learn how to add your first mesh!

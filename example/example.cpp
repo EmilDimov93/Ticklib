@@ -12,9 +12,9 @@ int main()
     tlInit(600, 300);
 
     // Add meshes at specified positions with colors
-    tlAddMesh("../../cube.obj", {0, -0.5f, -7}, COLOR_BROWN);
-    tlAddMesh("../../teapot.obj", {0, -0.1f, -7}, COLOR_GRAY);
-    tlAddMesh("../../cow.obj", {-2, -0.1f, -7}, COLOR_PURPLE);
+    tlAddMesh("../../models/cube.obj", {0, -0.5f, -7}, COLOR_BROWN);
+    tlAddMesh("../../models/teapot.obj", {0, -0.1f, -7}, COLOR_GRAY);
+    tlAddMesh("../../models/cow.obj", {-2, -0.1f, -7}, COLOR_PURPLE);
 
     // Scale meshes by filename
     tlScaleMesh("teapot.obj", 0.1f);
