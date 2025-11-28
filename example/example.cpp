@@ -6,7 +6,7 @@
 
 int main()
 {
-    tlInit(1000, 1000);
+    tlInit(600, 300);
 
     tlAddMesh("cube.obj", {0, -0.5f, -7}, COLOR_BROWN);
     tlAddMesh("teapot.obj", {0, -0.1f, -7}, COLOR_GRAY);
