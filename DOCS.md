@@ -1,4 +1,6 @@
-# Notes
+# Documentation
+
+## Notes
 
 All functions start with the prefix `tl`
 All definitions start with the prefix `TL`
@@ -13,7 +15,7 @@ No arguments
 
 #### tlWindowOpen
 
-Checks if window should close
+Checks if window should close. Returns a boolean
 
 No arguments
 
@@ -164,29 +166,13 @@ Structure with floats x, y and z
 
 Structure with floats x, y and z
 
-#### Rotation2
-
-Structure with floats pitch and yaw
-
 #### Rotation3
 
 Structure with floats pitch, yaw and roll
 
-#### Size2
-
-Structure with ints w and h
-
-#### Size3
-
-Structure with ints w, h and d
-
 #### Triangle
 
 Structure with an array of 3 Position3 objects serving as the vertices of a triangle. Also has a color field
-
-#### Vec4
-
-Structure with floats x, y, z and w
 
 ### Constants
 

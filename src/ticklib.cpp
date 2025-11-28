@@ -16,6 +16,15 @@
 #include "Mesh.hpp"
 #include "Camera.hpp"
 
+struct Size2
+{
+    int w;
+    int h;
+
+    Size2() : w(0), h(0) {}
+    Size2(int newW, int newH) : w(newW), h(newH) {}
+};
+
 std::vector<Mesh> meshes;
 
 HWND hwnd;
@@ -32,6 +41,17 @@ DWORD start = 0;
 HCURSOR cursor;
 
 uint8_t fov = 60;
+
+struct Vec4
+{
+    float x;
+    float y;
+    float z;
+    float w;
+
+    Vec4() : x(0), y(0), z(0), w(0) {}
+    Vec4(float newX, float newY, float newZ, float newW) : x(newX), y(newY), z(newZ), w(newW) {}
+};
 
 void tlSetFov(int newFov){
     if(newFov > 0 && newFov < 180){
@@ -243,6 +263,8 @@ void tlInit(int windowWidth, int windowHeight)
     cursor = LoadCursor(nullptr, IDC_ARROW);
     start = GetTickCount();
 }
+
+void refreshInput();
 
 bool tlWindowOpen()
 {

@@ -5,7 +5,6 @@
 
 #include <string>
 #include <windows.h>
-
 #include <cstdint>
 
 #define PI 3.1415927f
@@ -56,15 +55,6 @@ struct Scale3
     Scale3(float newX, float newY, float newZ) : x(newX), y(newY), z(newZ) {}
 };
 
-struct Rotation2
-{
-    float pitch;
-    float yaw;
-
-    Rotation2() : pitch(0), yaw(0) {}
-    Rotation2(float newPitch, float newYaw) : pitch(newPitch), yaw(newYaw) {}
-};
-
 struct Rotation3
 {
     float pitch;
@@ -73,25 +63,6 @@ struct Rotation3
 
     Rotation3() : pitch(0), yaw(0), roll(0) {}
     Rotation3(float newPitch, float newYaw, float newRoll) : pitch(newPitch), yaw(newYaw), roll(newRoll) {}
-};
-
-struct Size2
-{
-    int w;
-    int h;
-
-    Size2() : w(0), h(0) {}
-    Size2(int newW, int newH) : w(newW), h(newH) {}
-};
-
-struct Size3
-{
-    int w;
-    int h;
-    int d;
-
-    Size3() : w(0), h(0), d(0) {}
-    Size3(int newW, int newH, int newD) : w(newW), h(newH), d(newD) {}
 };
 
 struct Triangle
@@ -109,17 +80,6 @@ struct Triangle
              uint32_t col)
         : vertices{ a, b, c }, color(col)
     {}
-};
-
-struct Vec4
-{
-    float x;
-    float y;
-    float z;
-    float w;
-
-    Vec4() : x(0), y(0), z(0), w(0) {}
-    Vec4(float newX, float newY, float newZ, float newW) : x(newX), y(newY), z(newZ), w(newW) {}
 };
 
 #define TL_DEFAULT_CAMERA_SPEED 5.0f
@@ -245,8 +205,6 @@ typedef enum
     TL_KEY_LEFT_ALT = VK_LMENU,
     TL_KEY_RIGHT_ALT = VK_RMENU
 } TLKey;
-
-void refreshInput();
 
 bool tlIsDown(TLMouseBtn btn);
 bool tlIsUp(TLMouseBtn btn);

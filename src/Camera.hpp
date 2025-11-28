@@ -3,6 +3,15 @@
 
 #include "ticklib.hpp"
 
+struct Rotation2
+{
+    float pitch;
+    float yaw;
+
+    Rotation2() : pitch(0), yaw(0) {}
+    Rotation2(float newPitch, float newYaw) : pitch(newPitch), yaw(newYaw) {}
+};
+
 class Camera{
 private:
     Position3 position = {0, 0, -10};
