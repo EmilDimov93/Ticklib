@@ -1,13 +1,13 @@
 # Quick Start With Ticklib
 
-Refer to example folder for best results
+Refer to the [example](example/) for best results
 
 ### Requirements:
 - Windows computer
 
 ## 1. Download files
 
-Download the latest release
+[Download](https://github.com/EmilDimov93/Ticklib/releases/latest) the latest release
 
 ## 2. File structure
 

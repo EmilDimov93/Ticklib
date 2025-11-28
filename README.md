@@ -1,9 +1,8 @@
 # Ticklib
 
-![Total Commits](https://img.shields.io/github/commit-activity/t/EmilDimov93/Ticklib?style=plastic)
-![C++](https://img.shields.io/badge/language-C++-555555?style=plastic)
-![Version](https://img.shields.io/github/v/release/EmilDimov93/Ticklib?style=plastic)
-![License](https://img.shields.io/badge/license-MIT-555555?style=plastic)
+![Total Commits](https://img.shields.io/github/commit-activity/t/EmilDimov93/Ticklib?style=plastic) 
+![C++](https://img.shields.io/badge/language-C++-555555?style=plastic) 
+![Windows](https://img.shields.io/badge/platform-Windows-0078D6?style=plastic)
 
 A 3D library for Windows that allows you to display and manipulate triangulated .obj files. Built with C++ and windows.h
 
@@ -23,7 +22,7 @@ Full documentation is available in [DOCS.md](DOCS.md)
 
 ## Controls
 
-- *Move*: `W`, `A`, `S`, `D`
-- *Look around*: Hold the **left mouse button** and move the cursor
+- **Move**: `W`, `A`, `S`, `D`
+- **Look around**: Hold the **left mouse button** and move the cursor
 
 <img width="731" height="425" alt="unfilled" src="https://github.com/user-attachments/assets/3698e2eb-5e79-4cb0-aa4e-47b185b78a06" />
