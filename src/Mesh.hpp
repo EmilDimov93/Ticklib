@@ -8,7 +8,7 @@
 struct Triangle
 {
     Position3 vertices[3];
-    uint32_t color;
+    tlColor color;
 
     Triangle()
         : vertices{Position3(), Position3(), Position3()}, color(TlColors::Gray)
@@ -44,13 +44,13 @@ public:
     }
 };
 
-void MoveMesh(uint32_t index, Position3 delta);
-void MoveMesh(std::string name, Position3 delta);
+void MoveMesh(uint32_t index, Position3 deltaPos);
+void MoveMesh(std::string name, Position3 deltaPos);
 
-void RotateMesh(uint32_t index, Rotation3 rotation);
-void RotateMesh(std::string name, Rotation3 rotation);
+void RotateMesh(uint32_t index, Rotation3 deltaRot);
+void RotateMesh(std::string name, Rotation3 deltaRot);
 
-void ScaleMesh(uint32_t index, Scale3 scale);
-void ScaleMesh(std::string name, Scale3 scale);
-void ScaleMesh(uint32_t index, float scale);
-void ScaleMesh(std::string name, float scale);
+void ScaleMesh(uint32_t index, Scale3 deltaScale);
+void ScaleMesh(std::string name, Scale3 deltaScale);
+void ScaleMesh(uint32_t index, float deltaUniformScale);
+void ScaleMesh(std::string name, float deltaUniformScale);

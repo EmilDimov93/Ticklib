@@ -7,27 +7,27 @@
 
 extern std::vector<Mesh> meshes;
 
-void MoveMesh(uint32_t index, Position3 delta)
+void MoveMesh(uint32_t index, Position3 deltaPos)
 {
     for (Triangle& tri : meshes[index].tris)
     {
         for (Position3& vertice : tri.vertices)
         {
-            vertice.x += delta.x;
-            vertice.y += delta.y;
-            vertice.z += delta.z;
+            vertice.x += deltaPos.x;
+            vertice.y += deltaPos.y;
+            vertice.z += deltaPos.z;
         }
     }
 }
 
-void MoveMesh(std::string name, Position3 delta)
+void MoveMesh(std::string name, Position3 deltaPos)
 {
     int i = 0;
     for (const Mesh& mesh : meshes)
     {
         if (mesh.name == name)
         {
-            MoveMesh(i, delta);
+            MoveMesh(i, deltaPos);
             return;
         }
         i++;
@@ -37,11 +37,11 @@ void MoveMesh(std::string name, Position3 delta)
 }
 
 // Euler angle rotation formula
-void RotateMesh(uint32_t index, Rotation3 rotation)
+void RotateMesh(uint32_t index, Rotation3 deltaRot)
 {
-    float cp = cosf(rotation.pitch), sp = sinf(rotation.pitch);
-    float cy = cosf(rotation.yaw), sy = sinf(rotation.yaw);
-    float cr = cosf(rotation.roll), sr = sinf(rotation.roll);
+    float cp = cosf(deltaRot.pitch), sp = sinf(deltaRot.pitch);
+    float cy = cosf(deltaRot.yaw), sy = sinf(deltaRot.yaw);
+    float cr = cosf(deltaRot.roll), sr = sinf(deltaRot.roll);
 
     for (Triangle& tri : meshes[index].tris)
     {
@@ -67,14 +67,14 @@ void RotateMesh(uint32_t index, Rotation3 rotation)
     }
 }
 
-void RotateMesh(std::string name, Rotation3 rotation)
+void RotateMesh(std::string name, Rotation3 deltaRot)
 {
     int i = 0;
     for (const Mesh& mesh : meshes)
     {
         if (mesh.name == name)
         {
-            RotateMesh(i, rotation);
+            RotateMesh(i, deltaRot);
             return;
         }
         i++;
@@ -83,27 +83,27 @@ void RotateMesh(std::string name, Rotation3 rotation)
     std::cerr << "Couldn't find mesh: " << name << std::endl;
 }
 
-void ScaleMesh(uint32_t index, Scale3 scale)
+void ScaleMesh(uint32_t index, Scale3 deltaScale)
 {
     for (Triangle& tri : meshes[index].tris)
     {
         for (Position3& vertice : tri.vertices)
         {
-            vertice.x *= scale.x;
-            vertice.y *= scale.y;
-            vertice.z *= scale.z;
+            vertice.x *= deltaScale.x;
+            vertice.y *= deltaScale.y;
+            vertice.z *= deltaScale.z;
         }
     }
 }
 
-void ScaleMesh(std::string name, Scale3 scale)
+void ScaleMesh(std::string name, Scale3 deltaScale)
 {
     int i = 0;
     for (const Mesh& mesh : meshes)
     {
         if (mesh.name == name)
         {
-            ScaleMesh(i, scale);
+            ScaleMesh(i, deltaScale);
             return;
         }
         i++;
@@ -112,12 +112,12 @@ void ScaleMesh(std::string name, Scale3 scale)
     std::cerr << "Couldn't find mesh: " << name << std::endl;
 }
 
-void ScaleMesh(uint32_t index, float scale)
+void ScaleMesh(uint32_t index, float deltaUniformScale)
 {
-    ScaleMesh(index, {scale, scale, scale});
+    ScaleMesh(index, {deltaUniformScale, deltaUniformScale, deltaUniformScale});
 }
 
-void ScaleMesh(std::string name, float scale)
+void ScaleMesh(std::string name, float deltaUniformScale)
 {
-    ScaleMesh(name, {scale, scale, scale});
+    ScaleMesh(name, {deltaUniformScale, deltaUniformScale, deltaUniformScale});
 }

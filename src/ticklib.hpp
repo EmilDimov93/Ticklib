@@ -6,26 +6,31 @@
 #include <string>
 #include <windows.h>
 
+// Color type for clarity
+using tlColor = uint32_t;
+
+// RGBA colors in format 0xAARRGGBB
 struct TlColors
 {
-    static constexpr uint32_t White = 0xFFFFFFFF;
-    static constexpr uint32_t Black = 0xFF000000;
-    static constexpr uint32_t Red = 0xFFFF0000;
-    static constexpr uint32_t Green = 0xFF00FF00;
-    static constexpr uint32_t Blue = 0xFF0000FF;
-    static constexpr uint32_t Yellow = 0xFFFFFF00;
-    static constexpr uint32_t Cyan = 0xFF00FFFF;
-    static constexpr uint32_t Magenta = 0xFFFF00FF;
-    static constexpr uint32_t Orange = 0xFFFFA500;
-    static constexpr uint32_t Purple = 0xFF800080;
-    static constexpr uint32_t Pink = 0xFFFF69B4;
-    static constexpr uint32_t Brown = 0xFF8B4513;
-    static constexpr uint32_t Gray = 0xFF808080;
-    static constexpr uint32_t LightGray = 0xFFD3D3D3;
-    static constexpr uint32_t DarkGray = 0xFF404040;
-    static constexpr uint32_t LightBlue = 0xFFA0C8FF;
+    static constexpr tlColor White = 0xFFFFFFFF;
+    static constexpr tlColor Black = 0xFF000000;
+    static constexpr tlColor Red = 0xFFFF0000;
+    static constexpr tlColor Green = 0xFF00FF00;
+    static constexpr tlColor Blue = 0xFF0000FF;
+    static constexpr tlColor Yellow = 0xFFFFFF00;
+    static constexpr tlColor Cyan = 0xFF00FFFF;
+    static constexpr tlColor Magenta = 0xFFFF00FF;
+    static constexpr tlColor Orange = 0xFFFFA500;
+    static constexpr tlColor Purple = 0xFF800080;
+    static constexpr tlColor Pink = 0xFFFF69B4;
+    static constexpr tlColor Brown = 0xFF8B4513;
+    static constexpr tlColor Gray = 0xFF808080;
+    static constexpr tlColor LightGray = 0xFFD3D3D3;
+    static constexpr tlColor DarkGray = 0xFF404040;
+    static constexpr tlColor LightBlue = 0xFFA0C8FF;
 };
 
+// Mouse buttons. Used with input functions
 typedef enum
 {
     TL_MOUSE_BTN_LEFT = 0,
@@ -35,6 +40,7 @@ typedef enum
     TL_MOUSE_BTN_X2
 } TLMouseBtn;
 
+// Keyboard keys. Used with input functions
 typedef enum
 {
     TL_KEY_A = 'A',
@@ -108,6 +114,9 @@ typedef enum
     TL_KEY_RIGHT_ALT = VK_RMENU
 } TLKey;
 
+// Separate structures for clarity
+
+// 2D coordinate
 struct Position2
 {
     float x, y;
@@ -116,6 +125,7 @@ struct Position2
     Position2(float newX, float newY) : x(newX), y(newY) {}
 };
 
+// 3D coordinate
 struct Position3
 {
     float x, y, z;
@@ -124,6 +134,7 @@ struct Position3
     Position3(float newX, float newY, float newZ) : x(newX), y(newY), z(newZ) {}
 };
 
+// 3D scale
 struct Scale3
 {
     float x, y, z;
@@ -132,6 +143,7 @@ struct Scale3
     Scale3(float newX, float newY, float newZ) : x(newX), y(newY), z(newZ) {}
 };
 
+// 3D rotation in degrees
 struct Rotation3
 {
     float pitch, yaw, roll;
@@ -140,41 +152,61 @@ struct Rotation3
     Rotation3(float newPitch, float newYaw, float newRoll) : pitch(newPitch), yaw(newYaw), roll(newRoll) {}
 };
 
+// Initializes Ticklib and creates a window
 void tlInit(int windowWidth, int windowHeight);
 
+// Returns true while the window is open
 bool tlWindowOpen();
 
-void tlClearBackground(uint32_t color);
+// Clears the screen with the given RGBA color
+void tlClearBackground(tlColor color);
 
+// Returns the current Frames Per Second
 uint16_t tlGetFps();
 
-void tlAddMesh(std::string filePath, Position3 position, uint32_t color);
+// Loads triangulated .obj file and adds it to the list of meshes
+uint32_t tlAddMesh(std::string filePath, Position3 position, tlColor color);
 
+// Draws all added meshes. If the argument is true, triangles are filled, otherwise meshes are drawn as wireframes
 void tlDrawMeshes(bool trianglesFilled);
 
+// Sets camera movement speed. Default is 5.0f
 void tlSetCameraSpeed(float newSpeed);
 
+// Sets Field Of View. Default is 60 degrees
 void tlSetFov(int newFov);
 
-void tlMoveMesh(uint32_t index, Position3 delta);
-void tlMoveMesh(std::string name, Position3 delta);
+// Mesh manipulation functions have overloads to allow for searching by filename
 
-void tlRotateMesh(uint32_t index, Rotation3 rotation);
-void tlRotateMesh(std::string name, Rotation3 rotation);
+// Moves mesh by given delta
+void tlMoveMesh(uint32_t index, Position3 deltaPos);
+void tlMoveMesh(std::string name, Position3 deltaPos);
 
-void tlScaleMesh(uint32_t index, Scale3 scale);
-void tlScaleMesh(std::string name, Scale3 scale);
-void tlScaleMesh(uint32_t index, float scale);
-void tlScaleMesh(std::string name, float scale);
+// Rotates mesh
+void tlRotateMesh(uint32_t index, Rotation3 deltaRot);
+void tlRotateMesh(std::string name, Rotation3 deltaRot);
 
+// Scales mesh. Also has uniform overload
+void tlScaleMesh(uint32_t index, Scale3 deltaScale);
+void tlScaleMesh(std::string name, Scale3 deltaScale);
+void tlScaleMesh(uint32_t index, float deltaUniformScale);
+void tlScaleMesh(std::string name, float deltaUniformScale);
+
+// Returns true if mouse button / keyboard key is down
 bool tlIsDown(TLMouseBtn btn);
-bool tlIsUp(TLMouseBtn btn);
-bool tlIsPressed(TLMouseBtn btn);
-bool tlIsReleased(TLMouseBtn btn);
-
 bool tlIsDown(TLKey key);
+
+// Returns true if mouse button / keyboard key is up
+bool tlIsUp(TLMouseBtn btn);
 bool tlIsUp(TLKey key);
+
+// Returns true on the first frame a mouse button / keyboard key is pressed
+bool tlIsPressed(TLMouseBtn btn);
 bool tlIsPressed(TLKey key);
+
+// Returns true on the first frame a mouse button / keyboard key is released
+bool tlIsReleased(TLMouseBtn btn);
 bool tlIsReleased(TLKey key);
 
+// Returns the current mouse cursor position
 Position2 tlGetMousePos();

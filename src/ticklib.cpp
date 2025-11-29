@@ -69,7 +69,7 @@ uint16_t tlGetFps()
     return fps;
 }
 
-bool loadObject(const std::string &fileName, std::vector<Triangle> &out, uint32_t color)
+bool loadObject(const std::string &fileName, std::vector<Triangle> &out, tlColor color)
 {
     std::ifstream file(fileName);
     if (!file.is_open())
@@ -116,7 +116,7 @@ bool loadObject(const std::string &fileName, std::vector<Triangle> &out, uint32_
     return true;
 }
 
-void DrawLine(int x1, int y1, int x2, int y2, int color)
+void DrawLine(int x1, int y1, int x2, int y2, tlColor color)
 {
     int dx = abs(x2 - x1);
     int dy = abs(y2 - y1);
@@ -146,13 +146,13 @@ void DrawLine(int x1, int y1, int x2, int y2, int color)
     }
 }
 
-void DrawUnfilledTriangle(const Position2 &p0, const Position2 &p1, const Position2 &p2, int color){
+void DrawUnfilledTriangle(const Position2 &p0, const Position2 &p1, const Position2 &p2, tlColor color){
     DrawLine((int)p0.x, (int)p0.y, (int)p1.x, (int)p1.y, color);
     DrawLine((int)p1.x, (int)p1.y, (int)p2.x, (int)p2.y, color);
     DrawLine((int)p2.x, (int)p2.y, (int)p0.x, (int)p0.y, color);
 }
 
-void DrawFilledTriangle(const Position2 &p0, const Position2 &p1, const Position2 &p2, int color)
+void DrawFilledTriangle(const Position2 &p0, const Position2 &p1, const Position2 &p2, tlColor color)
 {
     const Position2 *pts[3] = {&p0, &p1, &p2};
     if (pts[1]->y < pts[0]->y)
@@ -199,7 +199,7 @@ void DrawFilledTriangle(const Position2 &p0, const Position2 &p1, const Position
     }
 }
 
-void tlClearBackground(uint32_t color)
+void tlClearBackground(tlColor color)
 {
     for (int i = 0; i < screenSize.w * screenSize.h; ++i)
         pixels[i] = color;
@@ -305,7 +305,7 @@ std::string getFileName(const std::string& fullPath) {
     return fullPath.substr(pos + 1);
 }
 
-void tlAddMesh(std::string filePath, Position3 position, uint32_t color)
+uint32_t tlAddMesh(std::string filePath, Position3 position, tlColor color)
 {
     std::vector<Triangle> tris;
     if (!loadObject(filePath, tris, color))
@@ -317,6 +317,7 @@ void tlAddMesh(std::string filePath, Position3 position, uint32_t color)
     Mesh mesh(tris, position, getFileName(filePath));
 
     meshes.push_back(mesh);
+    return meshes.size() - 1;
 }
 
 void convertTriToView(Triangle tri, Camera camera, Position3 meshPosition, Vec4 out[3])
@@ -414,13 +415,13 @@ void tlDrawMeshes(bool trianglesFilled)
     }
 }
 
-void tlMoveMesh(uint32_t index, Position3 delta){MoveMesh(index, delta);}
-void tlMoveMesh(std::string name, Position3 delta){MoveMesh(name, delta);}
+void tlMoveMesh(uint32_t index, Position3 deltaPos){MoveMesh(index, deltaPos);}
+void tlMoveMesh(std::string name, Position3 deltaPos){MoveMesh(name, deltaPos);}
 
-void tlRotateMesh(uint32_t index, Rotation3 rotation){RotateMesh(index, rotation);}
-void tlRotateMesh(std::string name, Rotation3 rotation){RotateMesh(name, rotation);}
+void tlRotateMesh(uint32_t index, Rotation3 deltaRot){RotateMesh(index, deltaRot);}
+void tlRotateMesh(std::string name, Rotation3 deltaRot){RotateMesh(name, deltaRot);}
 
-void tlScaleMesh(uint32_t index, Scale3 scale){ScaleMesh(index, scale);}
-void tlScaleMesh(std::string name, Scale3 scale){ScaleMesh(name, scale);}
-void tlScaleMesh(uint32_t index, float scale){ScaleMesh(index, scale);}
-void tlScaleMesh(std::string name, float scale){ScaleMesh(name, scale);}
+void tlScaleMesh(uint32_t index, Scale3 deltaScale){ScaleMesh(index, deltaScale);}
+void tlScaleMesh(std::string name, Scale3 deltaScale){ScaleMesh(name, deltaScale);}
+void tlScaleMesh(uint32_t index, float deltaUniformScale){ScaleMesh(index, deltaUniformScale);}
+void tlScaleMesh(std::string name, float deltaUniformScale){ScaleMesh(name, deltaUniformScale);}

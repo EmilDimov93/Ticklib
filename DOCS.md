@@ -2,193 +2,197 @@
 
 ## Functions
 
-All functions start with the prefix `tl`
+All functions start with the prefix `tl`.
 
-#### tlInit
+### tlInit
 
-Initializes the window and environment
+Initializes the window and environment.
 
-No arguments
+**No arguments**
 
-#### tlWindowOpen
+### tlWindowOpen
 
-Checks if window should close. Returns a boolean
+Checks if window should close. Returns a boolean.
 
-No arguments
+**No arguments**
 
-#### tlClearBackground
+### tlClearBackground
 
-Sets all pixels to one color
+Sets all pixels to one color.
 
-Arguments:
-- uint32_t color
+**Arguments:**
+- `tlColor color`
 
-#### tlAddMesh
+### tlAddMesh
 
-Adds a mesh to the scene. The filename becomes the name of the mesh and the triangles are set to the given color
+Adds a mesh to the scene. The filename becomes the name of the mesh and the triangles are set to the given color.
 
-Arguments:
-- std::string filePath
-- Position3 position
-- uint32_t color
+Returns the index of the new mesh in the list.
 
-#### tlDrawMeshes
+**Arguments:**
+- `std::string filePath`
+- `Position3 position`
+- `tlColor color`
 
-Draws all meshes added to the scene. Must be called every frame. The argument specifies whether the triangles drawn are filled
+### tlDrawMeshes
 
-Arguments:
-- bool trianglesFilled
+Draws all meshes added to the scene. Must be called every frame. The argument specifies whether the triangles drawn are filled.
 
-#### tlGetFps
+**Arguments:**
+- `bool trianglesFilled`
 
-Returns the current Frames Per Second
+### tlGetFps
 
-#### tlSetCameraSpeed
+Returns the current Frames Per Second.
 
-The camera is handled automatically, but you can change the movement speed with this function
+### tlSetCameraSpeed
 
-Arguments:
-- float newSpeed
+The camera is handled automatically, but you can change the movement speed with this function.
 
-#### tlSetFov
+**Arguments:**
+- `float newSpeed`
 
-Set the Field Of View of the camera
+### tlSetFov
 
-Arguments
-- float newFov
+Set the Field Of View of the camera.
 
-#### tlMoveMesh
+**Arguments:**
+- `float newFov`
 
-Moves a mesh by the given delta. Mesh can be specified by name
+### tlMoveMesh
 
-Arguments Overload 1:
-- uint32_t index
-- Position3 delta
+Moves a mesh by the given delta. Mesh can be specified by name.
 
-Arguments Overload 2:
-- std::string name
-- Position3 delta
+**Arguments Overload 1:**
+- `uint32_t index`
+- `Position3 deltaPos`
 
-#### tlRotateMesh
+**Arguments Overload 2:**
+- `std::string name`
+- `Position3 deltaPos`
 
-Rotates a mesh by the given delta. Mesh can be specified by name
+### tlRotateMesh
 
-Arguments Overload 1:
-- uint32_t index
-- Rotation3 rotation
+Rotates a mesh by the given delta. Mesh can be specified by name.
 
-Arguments Overload 2:
-- std::string name
-- Rotation3 rotation
+**Arguments Overload 1:**
+- `uint32_t index`
+- `Rotation3 deltaRot`
 
-#### tlScaleMesh
+**Arguments Overload 2:**
+- `std::string name`
+- `Rotation3 deltaRot`
 
-Scales a mesh by the given scale factor. Scale factor can either be a float for all axes, or specified for each axis separately by using the overload with Scale3 argument. Mesh can be specified by name
+### tlScaleMesh
 
-Arguments Overload 1:
-- uint32_t index
-- float scale
+Scales a mesh by a uniform value or a non-uniform Scale3. Mesh can be specified by name.
 
-Arguments Overload 2:
-- std::string name
-- float scale
+**Arguments Overload 1:**
+- `uint32_t index`
+- `float deltaScale`
 
-Arguments Overload 3:
-- uint32_t index
-- Scale3 scale
+**Arguments Overload 2:**
+- `std::string name`
+- `float deltaScale`
 
-Arguments Overload 4:
-- std::string name
-- Scale3 scale
+**Arguments Overload 3:**
+- `uint32_t index`
+- `Scale3 deltaUniformScale`
 
-#### tlIsDown
+**Arguments Overload 4:**
+- `std::string name`
+- `Scale3 deltaUniformScale`
 
-Checks if a key or mouse button is down. Returns true while down
+### tlIsDown
 
-Arguments Overload 1:
-- TLMouseBtn btn
+Checks if a key or mouse button is down. Returns true while down.
 
-Arguments Overload 2:
-- TLKey key
+**Arguments Overload 1:**
+- `TLMouseBtn btn`
 
-#### tlIsUp
+**Arguments Overload 2:**
+- `TLKey key`
 
-Checks if a key or mouse button is up. Returns true while up
+### tlIsUp
 
-Arguments Overload 1:
-- TLMouseBtn btn
+Checks if a key or mouse button is up. Returns true while up.
 
-Arguments Overload 2:
-- TLKey key
+**Arguments Overload 1:**
+- `TLMouseBtn btn`
 
-#### tlIsPressed
+**Arguments Overload 2:**
+- `TLKey key`
 
-Checks if a key or mouse button has just been pressed. Returns true only on the first frame when pressed
+### tlIsPressed
 
-Arguments Overload 1:
-- TLMouseBtn btn
+Checks if a key or mouse button has just been pressed. Returns true only on the first frame when pressed.
 
-Arguments Overload 2:
-- TLKey key
+**Arguments Overload 1:**
+- `TLMouseBtn btn`
 
-#### tlIsReleased
+**Arguments Overload 2:**
+- `TLKey key`
 
-Checks if a key or mouse button has just been released. Returns true only on the first frame when released
+### tlIsReleased
 
-Arguments Overload 1:
-- TLMouseBtn btn
+Checks if a key or mouse button has just been released. Returns true only on the first frame when released.
 
-Arguments Overload 2:
-- TLKey key
+**Arguments Overload 1:**
+- `TLMouseBtn btn`
 
-#### tlGetMousePos
+**Arguments Overload 2:**
+- `TLKey key`
 
-Returns the current mouse position
+### tlGetMousePos
 
-No arguments
+Returns the current mouse position.
+
+**No arguments**
 
 ## Definitions
+
+### tlColor
+
+Type for RGBA colors in format 0xAARRGGBB
 
 ### Structures
 
 #### Position2
 
-Structure with floats x and y
+Structure with floats x and y.
 
 #### Position3
 
-Structure with floats x, y and z
+Structure with floats x, y and z.
 
 #### Scale3
 
-Structure with floats x, y and z
+Structure with floats x, y and z.
 
 #### Rotation3
 
-Structure with floats pitch, yaw and roll
+Structure with floats pitch, yaw and roll.
 
 ### Colors
 
-All colors are in the namespace TlColors.
+All colors are in the namespace `TlColors`.
 
-Included colors: white, black, red, green, blue, light blue, yellow, cyan, magenta, orange, purple, pink, brown, gray, light gray, dark gray
+Included colors: white, black, red, green, blue, light blue, yellow, cyan, magenta, orange, purple, pink, brown, gray, light gray, dark gray.
 
 ### Enums
 
 #### TLMouseBtn
 
-Contains all mouse buttons. Used in input functions
+Contains all mouse buttons. Used in input functions.
 
 - TL_MOUSE_BTN_LEFT
 - TL_MOUSE_BTN_RIGHT
-
-...
+- ...
 
 #### TLKey
 
-Contains all keyboard keys. Used in input functions
+Contains all keyboard keys. Used in input functions.
 
 - TL_KEY_A
 - TL_KEY_B
-
-...
+- ...
