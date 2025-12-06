@@ -366,15 +366,16 @@ std::string getFileName(const std::string &fullPath)
     return fullPath.substr(pos + 1);
 }
 
-uint32_t tlAddMesh(std::string filePath, Position3 position, tlColor color)
+int32_t tlAddMesh(std::string filePath, Position3 position, tlColor color)
 {
     std::vector<Triangle> tris;
     if (!loadObject(filePath, tris, color))
     {
         std::cerr << "Failed to load model: " << filePath << std::endl;
+        return -1;
     }
 
-    std::cout << getFileName(filePath) << std::endl;
+    std::cout << "Loaded: " << getFileName(filePath) << std::endl;
     Mesh mesh(tris, position, getFileName(filePath));
 
     meshes.push_back(mesh);
