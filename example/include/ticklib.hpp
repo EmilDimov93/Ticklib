@@ -165,7 +165,7 @@ void tlClearBackground(tlColor color);
 uint16_t tlGetFps();
 
 // Loads triangulated .obj file and adds it to the list of meshes
-void tlAddMesh(std::string filePath, Position3 position, tlColor color);
+uint32_t tlAddMesh(std::string filePath, Position3 position, tlColor color);
 
 // Draws all added meshes. If the argument is true, triangles are filled, otherwise meshes are drawn as wireframes
 void tlDrawMeshes(bool trianglesFilled);

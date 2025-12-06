@@ -54,13 +54,18 @@ struct Vec4
     Vec4(float newX, float newY, float newZ, float newW) : x(newX), y(newY), z(newZ), w(newW) {}
 };
 
-void tlSetFov(int newFov){
-    if(newFov > 0 && newFov < 180){
+std::vector<float> depthBuffer;
+
+void tlSetFov(int newFov)
+{
+    if (newFov > 0 && newFov < 180)
+    {
         fov = newFov;
     }
 }
 
-void tlSetCameraSpeed(float newSpeed){
+void tlSetCameraSpeed(float newSpeed)
+{
     camera.setSpeed(newSpeed);
 }
 
@@ -100,7 +105,8 @@ bool loadObject(const std::string &fileName, std::vector<Triangle> &out, tlColor
                 std::string vert;
                 ss >> vert;
                 size_t slash = vert.find('/');
-                if (slash != std::string::npos){
+                if (slash != std::string::npos)
+                {
                     vert = vert.substr(0, slash);
                 }
                 indices[i] = std::stoi(vert) - 1;
@@ -116,7 +122,7 @@ bool loadObject(const std::string &fileName, std::vector<Triangle> &out, tlColor
     return true;
 }
 
-void DrawLine(int x1, int y1, int x2, int y2, tlColor color)
+void DrawLine(int x1, int y1, int x2, int y2, tlColor color, float z1, float z2)
 {
     int dx = abs(x2 - x1);
     int dy = abs(y2 - y1);
@@ -124,10 +130,24 @@ void DrawLine(int x1, int y1, int x2, int y2, tlColor color)
     int sy = (y1 < y2) ? 1 : -1;
     int err = dx - dy;
 
+    int length = std::max(dx, dy);
+    if (length == 0)
+        length = 1;
+    int step = 0;
+
     while (true)
     {
         if (x1 >= 0 && x1 < screenSize.w && y1 >= 0 && y1 < screenSize.h)
-            pixels[y1 * screenSize.w + x1] = color;
+        {
+            int idx = y1 * screenSize.w + x1;
+            float t = (float)step / (float)length;
+            float depth = z1 + t * (z2 - z1);
+            if (depth < depthBuffer[idx])
+            {
+                depthBuffer[idx] = depth;
+                pixels[idx] = color;
+            }
+        }
 
         if (x1 == x2 && y1 == y2)
             break;
@@ -143,16 +163,18 @@ void DrawLine(int x1, int y1, int x2, int y2, tlColor color)
             err += dx;
             y1 += sy;
         }
+        step++;
     }
 }
 
-void DrawUnfilledTriangle(const Position2 &p0, const Position2 &p1, const Position2 &p2, tlColor color){
-    DrawLine((int)p0.x, (int)p0.y, (int)p1.x, (int)p1.y, color);
-    DrawLine((int)p1.x, (int)p1.y, (int)p2.x, (int)p2.y, color);
-    DrawLine((int)p2.x, (int)p2.y, (int)p0.x, (int)p0.y, color);
+void DrawUnfilledTriangle(const Position2 &p0, const Position2 &p1, const Position2 &p2, tlColor color, float z0, float z1, float z2)
+{
+    DrawLine((int)std::round(p0.x), (int)std::round(p0.y), (int)std::round(p1.x), (int)std::round(p1.y), color, z0, z1);
+    DrawLine((int)std::round(p1.x), (int)std::round(p1.y), (int)std::round(p2.x), (int)std::round(p2.y), color, z1, z2);
+    DrawLine((int)std::round(p2.x), (int)std::round(p2.y), (int)std::round(p0.x), (int)std::round(p0.y), color, z2, z0);
 }
 
-void DrawFilledTriangle(const Position2 &p0, const Position2 &p1, const Position2 &p2, tlColor color)
+void DrawFilledTriangle(const Position2 &p0, const Position2 &p1, const Position2 &p2, tlColor color, float z0, float z1, float z2)
 {
     const Position2 *pts[3] = {&p0, &p1, &p2};
     if (pts[1]->y < pts[0]->y)
@@ -174,7 +196,24 @@ void DrawFilledTriangle(const Position2 &p0, const Position2 &p1, const Position
         int ixEnd = std::min(screenSize.w - 1, static_cast<int>(std::floor(xEnd)));
 
         for (int ix = ixStart; ix <= ixEnd; ix++)
-            pixels[iy * screenSize.w + ix] = color;
+        {
+            float iz0 = 1.0f / z0;
+            float iz1 = 1.0f / z1;
+            float iz2 = 1.0f / z2;
+
+            float depthA = iz0 + (iz2 - iz0) * ((y - pts[0]->y) / (pts[2]->y - pts[0]->y));
+            float depthB = iz0 + (iz1 - iz0) * ((y - pts[0]->y) / (pts[1]->y - pts[0]->y));
+            float t = (float)(ix - xStart) / (xEnd - xStart + 0.0001f);
+            float iz = depthA + t * (depthB - depthA);
+            float depth = 1.0f / iz;
+
+            int idx = iy * screenSize.w + ix;
+            if (depth < depthBuffer[idx])
+            {
+                depthBuffer[idx] = depth;
+                pixels[idx] = color;
+            }
+        }
     };
 
     auto interpolateX = [](float y, const Position2 &a, const Position2 &b) -> float
@@ -261,8 +300,10 @@ void tlInit(int windowWidth, int windowHeight)
     ShowWindow(hwnd, SW_SHOWDEFAULT);
 
     tlClearBackground(TlColors::Black);
-    cursor = LoadCursorW(nullptr, IDC_ARROW);
+    cursor = LoadCursor(nullptr, IDC_ARROW);
     start = GetTickCount();
+
+    depthBuffer.resize(windowWidth * windowHeight);
 }
 
 void refreshInput();
@@ -296,12 +337,18 @@ bool tlWindowOpen()
     camera.updateState();
 
     SetCursor(cursor);
+
+    for (auto &d : depthBuffer)
+        d = FLT_MAX;
+
     return true;
 }
 
-std::string getFileName(const std::string& fullPath) {
+std::string getFileName(const std::string &fullPath)
+{
     size_t pos = fullPath.find_last_of("/\\");
-    if (pos == std::string::npos) return fullPath;
+    if (pos == std::string::npos)
+        return fullPath;
     return fullPath.substr(pos + 1);
 }
 
@@ -317,7 +364,7 @@ uint32_t tlAddMesh(std::string filePath, Position3 position, tlColor color)
     Mesh mesh(tris, position, getFileName(filePath));
 
     meshes.push_back(mesh);
-    return meshes.size() - 1;
+    return static_cast<uint32_t>(meshes.size() - 1);
 }
 
 void convertTriToView(Triangle tri, Camera camera, Position3 meshPosition, Vec4 out[3])
@@ -383,9 +430,9 @@ void convertNormalizedToScreen(Position3 normalizedP[3], Position2 out[3])
 
 void tlDrawMeshes(bool trianglesFilled)
 {
-    for (const Mesh& mesh : meshes)
+    for (const Mesh &mesh : meshes)
     {
-        for (const Triangle& tri : mesh.tris)
+        for (const Triangle &tri : mesh.tris)
         {
             Vec4 viewP[3];
             convertTriToView(tri, camera, mesh.position, viewP);
@@ -404,23 +451,25 @@ void tlDrawMeshes(bool trianglesFilled)
             Position2 screenP[3];
             convertNormalizedToScreen(normalizedP, screenP);
 
-            if(trianglesFilled){
-                DrawFilledTriangle(screenP[0], screenP[1], screenP[2], tri.color);
+            if (trianglesFilled)
+            {
+                DrawFilledTriangle(screenP[0], screenP[1], screenP[2], tri.color, viewP[0].z, viewP[1].z, viewP[2].z);
             }
-            else{
-                DrawUnfilledTriangle(screenP[0], screenP[1], screenP[2], tri.color);
+            else
+            {
+                DrawUnfilledTriangle(screenP[0], screenP[1], screenP[2], tri.color, viewP[0].z, viewP[1].z, viewP[2].z);
             }
         }
     }
 }
 
-void tlMoveMesh(uint32_t index, Position3 deltaPos){MoveMesh(index, deltaPos);}
-void tlMoveMesh(std::string name, Position3 deltaPos){MoveMesh(name, deltaPos);}
+void tlMoveMesh(uint32_t index, Position3 deltaPos) { MoveMesh(index, deltaPos); }
+void tlMoveMesh(std::string name, Position3 deltaPos) { MoveMesh(name, deltaPos); }
 
-void tlRotateMesh(uint32_t index, Rotation3 deltaRot){RotateMesh(index, deltaRot);}
-void tlRotateMesh(std::string name, Rotation3 deltaRot){RotateMesh(name, deltaRot);}
+void tlRotateMesh(uint32_t index, Rotation3 deltaRot) { RotateMesh(index, deltaRot); }
+void tlRotateMesh(std::string name, Rotation3 deltaRot) { RotateMesh(name, deltaRot); }
 
-void tlScaleMesh(uint32_t index, Scale3 deltaScale){ScaleMesh(index, deltaScale);}
-void tlScaleMesh(std::string name, Scale3 deltaScale){ScaleMesh(name, deltaScale);}
-void tlScaleMesh(uint32_t index, float deltaUniformScale){ScaleMesh(index, deltaUniformScale);}
-void tlScaleMesh(std::string name, float deltaUniformScale){ScaleMesh(name, deltaUniformScale);}
+void tlScaleMesh(uint32_t index, Scale3 deltaScale) { ScaleMesh(index, deltaScale); }
+void tlScaleMesh(std::string name, Scale3 deltaScale) { ScaleMesh(name, deltaScale); }
+void tlScaleMesh(uint32_t index, float deltaUniformScale) { ScaleMesh(index, deltaUniformScale); }
+void tlScaleMesh(std::string name, float deltaUniformScale) { ScaleMesh(name, deltaUniformScale); }
