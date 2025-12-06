@@ -261,7 +261,7 @@ void tlInit(int windowWidth, int windowHeight)
     ShowWindow(hwnd, SW_SHOWDEFAULT);
 
     tlClearBackground(TlColors::Black);
-    cursor = LoadCursor(nullptr, IDC_ARROW);
+    cursor = LoadCursorW(nullptr, IDC_ARROW);
     start = GetTickCount();
 }
 
@@ -335,15 +335,14 @@ void convertTriToView(Triangle tri, Camera camera, Position3 meshPosition, Vec4 
     }
 }
 
-bool isTriInView(Vec4 viewP[3])
+bool isTriangleInView(Vec4 viewP[3])
 {
     for (int i = 0; i < 3; i++)
     {
         if (viewP[i].z <= 0.01f)
             return false;
 
-        if (std::isnan(viewP[i].x) || std::isnan(viewP[i].y) || std::isnan(viewP[i].z) ||
-            std::isinf(viewP[i].x) || std::isinf(viewP[i].y) || std::isinf(viewP[i].z))
+        if (std::isnan(viewP[i].x) || std::isnan(viewP[i].y) || std::isnan(viewP[i].z) || std::isinf(viewP[i].x) || std::isinf(viewP[i].y) || std::isinf(viewP[i].z))
             return false;
     }
 
@@ -384,14 +383,14 @@ void convertNormalizedToScreen(Position3 normalizedP[3], Position2 out[3])
 
 void tlDrawMeshes(bool trianglesFilled)
 {
-    for (const auto& mesh : meshes)
+    for (const Mesh& mesh : meshes)
     {
-        for (const auto& tri : mesh.tris)
+        for (const Triangle& tri : mesh.tris)
         {
             Vec4 viewP[3];
             convertTriToView(tri, camera, mesh.position, viewP);
 
-            if (!isTriInView(viewP))
+            if (!isTriangleInView(viewP))
             {
                 continue;
             }
