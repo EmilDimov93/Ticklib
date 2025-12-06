@@ -1,8 +1,9 @@
 # Ticklib
 
-![Version](https://img.shields.io/github/v/release/EmilDimov93/Ticklib?style=plastic&color=green)
-![C++](https://img.shields.io/badge/language-C++-555555?style=plastic) 
-![Windows](https://img.shields.io/badge/platform-Windows-0078D6?style=plastic)
+![Version](https://img.shields.io/github/v/release/EmilDimov93/Ticklib?style=plastic&color=00AA00)
+![C++](https://img.shields.io/badge/language-C++-000000?style=plastic) 
+![Windows](https://img.shields.io/badge/platform-Windows-0078D6?style=plastic) 
+![Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-FF0000?style=plastic)
 
 A 3D library for Windows that allows you to display and manipulate triangulated .obj files. Built with C++ and windows.h
 
