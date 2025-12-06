@@ -201,8 +201,22 @@ void DrawFilledTriangle(const Position2 &p0, const Position2 &p1, const Position
             float iz1 = 1.0f / z1;
             float iz2 = 1.0f / z2;
 
-            float depthA = iz0 + (iz2 - iz0) * ((y - pts[0]->y) / (pts[2]->y - pts[0]->y));
-            float depthB = iz0 + (iz1 - iz0) * ((y - pts[0]->y) / (pts[1]->y - pts[0]->y));
+            float y0 = pts[0]->y;
+            float y1 = pts[1]->y;
+            float y2 = pts[2]->y;
+
+            float depthA, depthB;
+            if (y <= y1)
+            {
+                depthA = iz0 + (iz2 - iz0) * ((y - y0) / (y2 - y0));
+                depthB = iz0 + (iz1 - iz0) * ((y - y0) / (y1 - y0));
+            }
+            else
+            {
+                depthA = iz0 + (iz2 - iz0) * ((y - y0) / (y2 - y0));
+                depthB = iz1 + (iz2 - iz1) * ((y - y1) / (y2 - y1));
+            }
+
             float t = (float)(ix - xStart) / (xEnd - xStart + 0.0001f);
             float iz = depthA + t * (depthB - depthA);
             float depth = 1.0f / iz;

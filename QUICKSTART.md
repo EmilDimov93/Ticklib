@@ -17,7 +17,7 @@ MyProgram/
 ├─ include/
 │  └─ ticklib.hpp
 ├─ lib/
-│  └─ Ticklib.lib
+│  └─ ticklib.lib
 ├─ myProgram.cpp
 └─ CMakeLists.txt
 ```
@@ -55,7 +55,7 @@ add_executable(example example.cpp)
 
 target_include_directories(example PRIVATE "${CMAKE_SOURCE_DIR}/include")
 
-target_link_libraries(example PRIVATE "${CMAKE_SOURCE_DIR}/lib/Ticklib.lib" user32 gdi32)
+target_link_libraries(example PRIVATE "${CMAKE_SOURCE_DIR}/lib/ticklib.lib" user32 gdi32)
 ```
 
 Then run these commands in powershell:

@@ -13,7 +13,7 @@ int main()
 
     // Add meshes at specified positions with colors
     tlAddMesh("../../models/cube.obj", {0, -0.5f, -7}, TlColors::Brown);
-    tlAddMesh("../../models/teapot.obj", {0, -0.1f, -7}, TlColors::Gray);
+    tlAddMesh("../../models/teapot.obj", {0, -0.09f, -7}, TlColors::Gray);
     tlAddMesh("../../models/cow.obj", {-2, -0.1f, -7}, TlColors::Purple);
 
     // Scale meshes by filename
