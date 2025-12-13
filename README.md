@@ -1,4 +1,4 @@
-# Ticklib
+# <img width="28" height="38" alt="transparent_no_whitespace" src="https://github.com/user-attachments/assets/5c54d71b-5a1c-455a-80dd-6a61873ed1cb" /> Ticklib
 
 ![Version](https://img.shields.io/github/v/release/EmilDimov93/Ticklib?style=plastic&color=00AA00)
 ![C++](https://img.shields.io/badge/language-C++-000000?style=plastic) 
